@@ -38,14 +38,11 @@ The goal was to deploy a server for cybersecurity experimentation, specifically:
 
   2. 对付“三道锁”
      - Instance:
-       * OCI Instance检查Gateway是否开启0.0.0.0/0（
-       * OCI Instance检查Security Group是否有规则凌驾于
-       * Gateway对0.0.0.0/0（任何端口）开放
-   - Virtual cloud networks:
-     * 找到Instance所在的subnet
-     * 出站规则
-
-   - 
+       * 检查是不是Reserved Public IPv4
+     - Virtual cloud networks:
+       * 设置我想要的Ingress Rules入站规则（先不要动端口22）：Virtual Cloud Networks → vcn-20260416-1545(Instance所在的vcn) → Subnet → Security → Security Rules
+     - IPtable
+     - UFW
        
 ---
 ## What I Did
