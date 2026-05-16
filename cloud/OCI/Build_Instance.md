@@ -3,20 +3,7 @@
 ---
 
 结构：
-
-    Internet
-        ↓
-     公网 IP
-        ↓
-[ OCI VCN 10.0.0.0/16 ]
-        ↓
-[ Public Subnet 10.0.1.0/24 ]
-        ↓
-[ Ubuntu Instance ]
-        ↓
-    [ Docker ]
-        ↓
-Flask + Nginx + SQLite
+Internet → 公网 IP → OCI VCN → Public Subnet → Ubuntu Instance → Docker → Flask + Nginx + SQLite
 
 ---
 
@@ -67,60 +54,135 @@ Flask + Nginx + SQLite
 
 ##设置网络和SSH
 
-### 1.进入cy-server-Ora(x86)实例，点击Networking，查看是否有Public IPv4 Address
+    ### 1.进入cy-server-Ora(x86)实例，点击Networking，查看是否有Public IPv4 Address
 
-### 2.进入VNIC的IP administration，如果没有IPv4就添加一个，有就查看是Reserved还是Ephemeral并记住IP地址（本案例：有，是Ephemeral，地址为161.XX.XX.XX)
+    ### 2.进入VNIC的IP administration，如果没有IPv4就添加一个，有就查看是Reserved还是Ephemeral并记住IP地址（本案例：有，是Ephemeral，地址为161.XX.XX.XX)
 
-### 3.把下载的密钥放进~/.ssh
+    ### 3.把下载的密钥放进~/.ssh
 
-### 4.（可选）设置ssh config:
-    Host server-agile
-      HostName 161.XX.XX.XX
-      User ubuntu
-      IdentityFile ~/.ssh/ssh-key-2026-05-16.key
+    ### 4.（可选）设置ssh config:
+        Host server-agile
+          HostName 161.XX.XX.XX
+          User ubuntu
+          IdentityFile ~/.ssh/ssh-key-2026-05-16.key
       
-### 5.设置SSH密钥权限
-    ·chmod 600 ~/.ssh/ssh-key-2026-05-16.key·
+    ### 5.设置SSH密钥权限:
+        ·chmod 600 ~/.ssh/ssh-key-2026-05-16.key·
 
-### 6.SSH服务器：
-    ·ssh server-agile`
+    ### 6.SSH服务器：
+        ·ssh server-agile`
 
 ---
+
 ##测试控制台是否工作正常
 
-### 1.SSH进入服务器后设置密码：
-·sudo passwd ubuntu·
+    ### 1.SSH进入服务器后设置密码：
+    ·sudo passwd ubuntu·
 
-
+    ### 2.进入OS Management，点击Counsole connection
+        账号：ubuntu
+        密码：刚刚设置的
+        
 ---
 
 ##打开端口
 
-### 1. 写subnet-Flask的入站规则
-  开放80端口：
-  Souce CIDR: 0.0.0.0/0（所有IP全部可以进入）
-  IP Protocal：TCP（进入协议是网页跑的TCP协议）
-  Souce Port Range：留空（所有端口都可以进入）
-  Destination Port Range：80（进入内部subnet 80端口）
-  Description：HTTP connect
+    ### 1. 写subnet-Flask的入站规则
+      开放80端口：
+          Souce CIDR: 0.0.0.0/0（所有IP全部可以进入）
+          IP Protocal：TCP（进入协议是网页跑的TCP协议）
+          Souce Port Range：留空（所有端口都可以进入）
+          Destination Port Range：80（进入内部subnet 80端口）
+          Description：HTTP connect
+    
+      开放443端口：
+          Souce CIDR: 0.0.0.0/0（所有IP全部可以进入）
+          IP Protocal：TCP（进入协议是网页跑的TCP协议）
+          Souce Port Range：留空（所有端口都可以进入）
+          Destination Port Range：443（进入内部subnet 443端口）
+          Description：HTTPS connect
+    
+      开放Ping端口：
+          Souce CIDR: 0.0.0.0/0（所有IP全部可以进入）
+          IP Protocal：ICMP（Ping跑的协议）
+          Souce Port Range：留空
+          Destination Port Range：留空
+          Description：Ping
+    
+    ### 2.查看Oracle定制版Ubuntu默认防火墙
+      查看ip table:
+          ·sudo iptables-save·
+          默认是：
+          1 established2 icmp
+          3 lo
+          4 ssh
+          5 reject
+    （可选）查看nft table
+        ·sudo nft list ruleset·
 
-  开放443端口：
-  Souce CIDR: 0.0.0.0/0（所有IP全部可以进入）
-  IP Protocal：TCP（进入协议是网页跑的TCP协议）
-  Souce Port Range：留空（所有端口都可以进入）
-  Destination Port Range：443（进入内部subnet 443端口）
-  Description：HTTPS connect
+    ### 3. 开放Ubuntu ip table端口
+        优先级5开放80端口
+        ·sudo iptables -I INPUT 5 -p tcp --dport 80 -j ACCEPT·
+        优先级6开放443端口
+        ·sudo iptables -I INPUT 6 -p tcp --dport 443 -j ACCEPT·
+        检查是否写入ip table
+        `sudo iptables -L -n --line-numbers`
+        
+---
 
-  开放Ping端口：
-  Souce CIDR: 0.0.0.0/0（所有IP全部可以进入）
-  IP Protocal：ICMP（Ping跑的协议）
-  Souce Port Range：留空
-  Destination Port Range：留空
-  Description：Ping
+##安装docker
+    https://docs.docker.com/engine/install/ubuntu/#installation-methods
+    
+    ### 1.安装基础包
+    `sudo apt update`
+    `sudo apt install -y ca-certificates curl`
 
-### 2.查看Oracle定制的Ubuntu的默认防火墙
-  ·sudo iptables-save·
-  ·sudo nft list ruleset·
+    ### 2.创建 keyrings
+    `sudo install -m 0755 -d /etc/apt/keyrings`
+
+    ### 3.下载 Docker GPG key
+    `sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc`
+
+    ### 4.设置权限
+    `sudo chmod a+r /etc/apt/keyrings/docker.asc`
+
+    ### 5.添加 Docker repo
+    `sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF`
+
+    ### 6.更新 apt
+    sudo apt update
+
+    ### 7.安装 Docker
+    `sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin`
+
+    | 包                     | 用途             |
+| --------------------- | -------------- |
+| docker-ce             | Docker Engine  |
+| docker-ce-cli         | docker 命令      |
+| containerd.io         | 容器运行时          |
+| docker-buildx-plugin  | 新 build 系统     |
+| docker-compose-plugin | docker compose |
+
+
+    ### 8.测试Docker
+    `sudo docker run hello-world`
+    
+
+    ### 9.
+    
+    
+
+
+
+    
+      
 
 
 
