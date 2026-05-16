@@ -157,18 +157,10 @@ Signed-By: /etc/apt/keyrings/docker.asc
 EOF`
 
     ### 6.更新 apt
-    sudo apt update
+    `sudo apt update`
 
     ### 7.安装 Docker
     `sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin`
-
-    | 包                     | 用途             |
-| --------------------- | -------------- |
-| docker-ce             | Docker Engine  |
-| docker-ce-cli         | docker 命令      |
-| containerd.io         | 容器运行时          |
-| docker-buildx-plugin  | 新 build 系统     |
-| docker-compose-plugin | docker compose |
 
 
     ### 8.测试Docker
