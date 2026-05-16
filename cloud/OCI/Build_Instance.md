@@ -147,21 +147,13 @@ Internet → 公网 IP → OCI VCN → Public Subnet → Ubuntu Instance → Doc
     `sudo chmod a+r /etc/apt/keyrings/docker.asc`
 
     ### 5.添加 Docker repo
-    `sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
-Types: deb
-URIs: https://download.docker.com/linux/ubuntu
-Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
-Components: stable
-Architectures: $(dpkg --print-architecture)
-Signed-By: /etc/apt/keyrings/docker.asc
-EOF`
+    看官网
 
     ### 6.更新 apt
     `sudo apt update`
 
     ### 7.安装 Docker
     `sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin`
-
 
     ### 8.测试Docker
     `sudo docker run hello-world`
