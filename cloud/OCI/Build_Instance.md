@@ -619,6 +619,16 @@ cd ~/web-stack
 docker compose restart
 ```
 
+### 用docker compose 运维
+修改容器配置文件
+```bash
+nano ~/web-stack/docker-compose.yml
+```
+重启所有服务
+```bash
+nano ~/web-stack/docker-compose.yml
+```
+
 ### 更新项目代码并重新部署
 
 ```bash
