@@ -626,7 +626,7 @@ nano ~/web-stack/docker-compose.yml
 ```
 重启所有服务
 ```bash
-nano ~/web-stack/docker-compose.yml
+docker compose -f ~/web-stack/docker-compose.yml up -d --force-recreate flask
 ```
 
 ### 更新项目代码并重新部署
