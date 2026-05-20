@@ -187,6 +187,14 @@ sudo passwd ubuntu
 * Destination Port Range: `80`
 * Description: `HTTP connect`
 
+### Open Port 81
+
+* Source CIDR: `0.0.0.0/0`
+* IP Protocol: `TCP`
+* Source Port Range: Leave blank
+* Destination Port Range: `81`
+* Description: `npm`
+
 ### Open Port 443
 
 * Source CIDR: `0.0.0.0/0`
