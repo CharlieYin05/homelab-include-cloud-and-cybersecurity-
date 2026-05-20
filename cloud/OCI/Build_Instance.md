@@ -451,10 +451,14 @@ services:
     image: flask-project
     container_name: flask-web
     restart: unless-stopped
+    env_file:
+      - /home/ubuntu/cits3403-project/.env
     expose:
       - "5000"
     volumes:
-      - /home/ubuntu/cits3403-project/persistent-db/app.db:/app/app/app.db
+      - ~/cits3403-project/persistent-db/app.db:/app/app/app.db
+      - /home/ubuntu/cits3403-project/persistent-db:/app/persistent-db
+      - /home/ubuntu/cits3403-project/app/static/uploads:/app/app/static/uploads
 ```
 
 注意：
