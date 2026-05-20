@@ -88,21 +88,21 @@ Internet → 公网 IP → OCI VCN → Public Subnet → Ubuntu Instance → Doc
 ## 打开端口
 
     ### 1. 写subnet-Flask的入站规则
-      开放80端口：
+      开放HTTP 80端口：
           Souce CIDR: 0.0.0.0/0（所有IP全部可以进入）
           IP Protocal：TCP（进入协议是网页跑的TCP协议）
           Souce Port Range：留空（所有端口都可以进入）
           Destination Port Range：80（进入内部subnet 80端口）
           Description：HTTP connect
     
-      开放443端口：
+      开放HTTPS 443端口：
           Souce CIDR: 0.0.0.0/0（所有IP全部可以进入）
           IP Protocal：TCP（进入协议是网页跑的TCP协议）
           Souce Port Range：留空（所有端口都可以进入）
           Destination Port Range：443（进入内部subnet 443端口）
           Description：HTTPS connect
 
-      开放反向代理服务器端口：
+      开放反向代理服务 81端口：
           Souce CIDR: 0.0.0.0/0（所有IP全部可以进入）
           IP Protocal：TCP（进入协议是网页跑的TCP协议）
           Souce Port Range：留空（所有端口都可以进入）
