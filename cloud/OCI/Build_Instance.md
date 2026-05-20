@@ -52,7 +52,7 @@ Internet → 公网 IP → OCI VCN → Public Subnet → Ubuntu Instance → Doc
 
 ---
 
-##设置网络和SSH
+## 设置网络和SSH
 
     ### 1.进入cy-server-Ora(x86)实例，点击Networking，查看是否有Public IPv4 Address
 
@@ -74,7 +74,7 @@ Internet → 公网 IP → OCI VCN → Public Subnet → Ubuntu Instance → Doc
 
 ---
 
-##测试控制台是否工作正常
+## 测试控制台是否工作正常
 
     ### 1.SSH进入服务器后设置密码：
     ·sudo passwd ubuntu·
@@ -85,7 +85,7 @@ Internet → 公网 IP → OCI VCN → Public Subnet → Ubuntu Instance → Doc
         
 ---
 
-##打开端口
+## 打开端口
 
     ### 1. 写subnet-Flask的入站规则
       开放80端口：
@@ -130,7 +130,7 @@ Internet → 公网 IP → OCI VCN → Public Subnet → Ubuntu Instance → Doc
         
 ---
 
-##安装docker
+## 安装docker
     https://docs.docker.com/engine/install/ubuntu/#installation-methods
     
     ### 1.安装基础包
