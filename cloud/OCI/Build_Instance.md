@@ -2,12 +2,12 @@
 
 ---
 
-结构：
+## 结构：
 Internet → 公网 IP → OCI VCN → Public Subnet → Ubuntu Instance → Docker → Flask + Nginx + SQLite
 
 ---
 
-##创建服务器Build Instance
+## 创建服务器Build Instance
 
   ### 1.Basic inforamtion
     Name: 服务器名自己填（本案例：cy-server-Ora(x86)）
