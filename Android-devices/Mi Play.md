@@ -24,7 +24,7 @@
   3. mac安装安卓投屏与控制工具
      `brew install scrcpy`
 
-### 遇到的问题1.1：scrpy只有画面没有输入指令
+### 遇到的问题1：scrpy只有画面没有输入指令
 ```
 charlieyin@mac ~ % adb shell
 lotus:/ $ whoami
@@ -38,7 +38,7 @@ Killed
 137|lotus:/ $ 
 ```
   - 怀疑1：/system/bin/input已损坏（已排除）
-  - 怀疑2：谁在杀ABD进程（MIUI安全策略）
+  - 怀疑2：系统在杀ABD进程（MIUI安全策略）
     ```
     W InputDispatcher: Permission denied: injecting event
     W InputManager: Input event injection from pid 31814 permission denied.
@@ -48,6 +48,21 @@ Killed
     ```
     解决方法：登陆小米账号，开启 USB 调试（安全设置）
 
-## 2. 导出手机照片
+## 导出手机照片
+  1. mac创建目标文件夹
+  `mkdir -p "/Users/charlieyin/Desktop/Mi-Play"`
+  2. 备份安卓DCIM文件（里面包括相机拍摄照片）
+  `adb pull /sdcard/DCIM ~/Desktop/Mi-Play/`
+  3. 备份安卓Pictures（里面包括微信下载到本地照片）
+  `adb pull /sdcard/Pictures ~/Desktop/Mi-Play/`
+
+  最终文件结构：
+  ```
+  ~/Desktop/Mi-Play/
+  ├── DCIM/
+  └── Pictures/
+    ├── WeiXin/
+    └── ...
+  ```
 
     
