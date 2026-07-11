@@ -82,9 +82,12 @@ Killed
        charlieyin@mac ~ % adb shell getprop ro.product.device
        lotus
        ```
+       
      2.2 找到 V11.0.8.0.OFICNXM 官方 Fastboot ROM（线刷包）并下载
        `https://xiaomirom.com/download/mi-play-lotus-stable-V11.0.8.0.OFICNXM/`
+     
      2.3 解压下载的线刷压缩包
+     
        `tar -xzf lotus_images_V11.0.8.0.OFICNXM_20201120.0000.00_8.1_cn_800a08faa8.tgz`
      2.4 确认boot.img，大小应在30~60MB左右，然后复制一份
        ```
@@ -100,10 +103,13 @@ Killed
        -rw-r--r--@ 1 charlieyin  staff    32M 11 Jul 20:35 ../Backup/original_boot.img
        ```
        之后如果Magisk有问题理论上救砖：`fastboot flash boot original_boot.img`
+     
      2.5 保存保存 boot 的 SHA256已用于后续确认boot文件是否损坏
        `shasum -a 256 ../Backup/original_boot.img | tee ../Backup/original_boot.sha256`
+     
      2.6 手机进入Fastboot
        `adb reboot bootloader`
+     
      2.7 保存 Fastboot 信息
        `fastboot getvar all 2>&1 | tee ~/Documents/Mi_Play_ROM/Backup/fastboot-info.txt`
      
