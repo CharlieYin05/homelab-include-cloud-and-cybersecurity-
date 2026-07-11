@@ -14,6 +14,7 @@
 ## 技术栈
   - ADB
   - scrcpy
+  - Magisk Patch
   - termux
   - nmap
 
