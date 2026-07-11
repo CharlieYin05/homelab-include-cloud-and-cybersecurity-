@@ -2,7 +2,7 @@
 
 ## 背景
   - 手机型号：小米Play
-  - 系统：安卓10（miui 11）
+  - 系统：安卓8.1（MIUI v11）
   - 手机现状：手机屏幕漏液损坏，目前右边30%无法显示，按键一切正常，电池寿命未知
 
 ## 目标
@@ -18,6 +18,15 @@
   - nmap
 
 ### 遇到的问题1：scrpy只有画面没有输入指令
-  ## 问题1.1: 安卓系统不对
-    ·adb shell getprop ro.build.version.release 8.1.0·
-  ## 
+```
+charlieyin@mac ~ % adb shell
+lotus:/ $ whoami
+shell
+lotus:/ $ id
+uid=2000(shell) gid=2000(shell) groups=2000(shell),1007(log),1011(adb),1015(sdcard_rw),1028(sdcard_r),3001(net_bt_admin),3002(net_bt),3003(inet),3006(net_bw_stats),3009(readproc),3011(uhid) context=u:r:shell:s0
+lotus:/ $ which input
+/system/bin/input
+lotus:/ $ input keyevent 3
+Killed 
+137|lotus:/ $ 
+```
