@@ -113,13 +113,58 @@ Killed
      2.7 保存 Fastboot 信息
        `fastboot getvar all 2>&1 | tee ~/Documents/Mi_Play_ROM/Backup/fastboot-info.txt`
      
+  4. 下载Magisk`https://github.com/topjohnwu/magisk/releases`然后安装
+       `adb install Magisk-v30.7.apk`
      
-       
+  5. 把 boot 镜像复制到设备
+       `adb push /Users/charlieyin/Documents/Mi_Play_ROM/Backup/original_boot.img /sdcard/Download/`
+       `adb shell ls -lh /sdcard/Download/original_boot.img`
      
-       
-     
-     
+  6. Magisk修复镜像
+     - 保持强制加密
+     - 选择修补一个文件，找到位于Download里的original_boot.img，并修复
+  
+  7. 把真正的镜像拉回Mac
+     ```
+     找到修补后的img文件：
+     adb shell find /storage/emulated/0 -name "magisk*" 2>/dev/null
 
-     
+     文件名：
+     /storage/emulated/0/Download/magisk_patched-30700_XRh60.img
 
+     拉回Mac:
+     adb pull /storage/emulated/0/Download/magisk_patched-30700_XRh60.img \
+~/Documents/Mi_Play_ROM/Magisk/
+     ```
+  8. 确认镜像大小（应该在32MB左右，实际上34.3MB）
+
+  9. 确认Fastboot 还能正常工作
+      ```
+      adb reboot bootloader
+      fastboot devices
+      ```
+      
+  10. 把修补好的img刷回去,等待重启进入系统
+      ```
+      cd ~/Documents/Mi_Play_ROM/Magisk
+
+      fastboot flash boot magisk_patched-30700_XRh60.img
+
+      fastboot reboot
+      ```
+
+  11. 获取root权限
+      打开面具后电脑输入
+      ```
+      adb shell
+
+      su（手机点击确认）
+
+      whoami
+      ```
+      输出root则代表成功
+      
+    
+     
+      
     
