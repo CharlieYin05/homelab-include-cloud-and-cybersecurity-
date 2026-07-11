@@ -65,4 +65,19 @@ Killed
     └── ...
   ```
 
+## Root
+  1. 解锁BL（找闲鱼万能的闲鱼老哥）
+  2. 救砖准备工作
+     2.1 确认当前ROM
+     ```
+     charlieyin@mac ~ % adb shell getprop ro.build.fingerprint
+     xiaomi/lotus/lotus:8.1.0/O11019/V11.0.8.0.OFICNXM:user/release-keys
+     charlieyin@mac ~ % adb shell getprop ro.build.version.incremental
+     V11.0.8.0.OFICNXM
+     charlieyin@mac ~ % adb shell getprop ro.product.device
+     lotus
+     ```
+
+     
+
     
