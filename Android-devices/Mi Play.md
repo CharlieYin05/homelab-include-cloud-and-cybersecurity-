@@ -30,3 +30,13 @@ lotus:/ $ input keyevent 3
 Killed 
 137|lotus:/ $ 
 ```
+  - 怀疑1：/system/bin/input已损坏（已排除）
+  - 怀疑2：谁在杀进程
+    ```
+    W InputDispatcher: Permission denied: injecting event
+    W InputManager: Input event injection from pid 31814 permission denied.
+
+    java.lang.SecurityException:
+    Injecting to another application requires INJECT_EVENTS permission
+    ```
+    
