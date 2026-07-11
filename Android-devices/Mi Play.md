@@ -21,9 +21,13 @@
 ## 无头ADB控制（达成）
   1. 手机开启USB调试
   2. mac安装Android Debug Bridge
-    `brew install --cask android-platform-tools`
+      `brew install --cask android-platform-tools`
   3. mac安装安卓投屏与控制工具
-     `brew install scrcpy`
+       `brew install scrcpy`
+  4. 确认adb是否正常
+       `adb devices`
+  5. 开启投屏操控手机
+       `scrcpy`
 
 ### 遇到的问题1：scrpy只有画面没有输入指令
 ```
@@ -52,12 +56,12 @@ Killed
 ## 导出手机照片
   1. mac创建目标文件夹
   `mkdir -p "/Users/charlieyin/Desktop/Mi-Play"`
-  2. 备份安卓DCIM文件（里面包括相机拍摄照片）
+  2. 备份安卓DCIM文件夹（里面包括相机拍摄照片）
   `adb pull /sdcard/DCIM ~/Desktop/Mi-Play/`
-  3. 备份安卓Pictures（里面包括微信下载到本地照片）
+  3. 备份安卓Pictures文件夹（里面包括微信下载到本地照片）
   `adb pull /sdcard/Pictures ~/Desktop/Mi-Play/`
 
-  最终文件结构：
+  最终电脑文件结构：
   ```
   ~/Desktop/Mi-Play/
   ├── DCIM/
@@ -96,6 +100,15 @@ Killed
        -rw-r--r--@ 1 charlieyin  staff    32M 11 Jul 20:35 ../Backup/original_boot.img
        ```
        之后如果Magisk有问题理论上救砖：`fastboot flash boot original_boot.img`
+     2.5 保存保存 boot 的 SHA256已用于后续确认boot文件是否损坏
+       `shasum -a 256 ../Backup/original_boot.img | tee ../Backup/original_boot.sha256`
+     2.6 手机进入Fastboot
+       `adb reboot bootloader`
+     2.7 保存 Fastboot 信息
+       `fastboot getvar all 2>&1 | tee ~/Documents/Mi_Play_ROM/Backup/fastboot-info.txt`
+     
+     
+       
      
        
      
