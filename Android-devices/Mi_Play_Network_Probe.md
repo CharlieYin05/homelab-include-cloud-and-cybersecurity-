@@ -7,7 +7,7 @@
 
 ## 1. 恢复出厂设置
   开机后开启USB调试
-  ![factory](Image/Factory reset.png)
+  ![Factory](Image/Factory_Reset.png)
 
 ## 2. 重新安装Magisk并安装TermuX
   ```
@@ -18,7 +18,8 @@
   adb install Magisk-v30.7.apk
   ```
   ### 问题1：恢复出厂设置后无法安装Magisk，执行su后没有反应
-    ![stuck](Image/Magisk_stuck.png)
+    ![Stuck](Image/Magisk_Stuck.png)
+    
     ```
     charlieyin@mac ~ % adb shell
     lotus:/ $ which su
