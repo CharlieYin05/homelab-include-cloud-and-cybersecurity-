@@ -31,6 +31,7 @@
     whoami
     id
     ```
+    
     解决方法：卸载开机自带的Magisk，重新安装
   
 ## 3. 安装Termux
