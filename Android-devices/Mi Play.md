@@ -3,7 +3,7 @@
 ## 背景
   - 手机型号：小米Play
   - 系统：安卓8.1（MIUI v11）
-  - 手机现状：手机屏幕漏液损坏，目前右边30%无法显示，按键一切正常，电池寿命未知
+  - 手机现状：手机屏幕漏液损坏，目前右边30%无法显示，其他硬件目前正常，电池寿命未知
   - 
 ![Mi Play](Image/Mi_Play_Phone.jpg)
 
@@ -117,18 +117,21 @@ Killed
      
   4. 下载Magisk`https://github.com/topjohnwu/magisk/releases`然后安装
        `adb install Magisk-v30.7.apk`
+     ![Mi Play](Image/Magisk_before_root.jpg)
+     初次打开Magisk画面，Ramdisk显示否
      
-  5. 把 boot 镜像复制到设备
+  6. 把 boot 镜像从电脑复制到手机
        `adb push /Users/charlieyin/Documents/Mi_Play_ROM/Backup/original_boot.img /sdcard/Download/`
        `adb shell ls -lh /sdcard/Download/original_boot.img`
      
-  6. Magisk修复镜像
+  8. Magisk修复镜像
      - 保持强制加密
-     - 选择修补一个文件，找到位于Download里的original_boot.img，并修复
+       ![Mi Play](Image/mandatory_encryption.png)
+     - 选择修补文件，找到刚刚从电脑传到手机的original_boot.img，位于Download里，并修复
   
-  7. 把真正的镜像拉回Mac
+  9. 把修补后的镜像拉回Mac
      ```
-     找到修补后的img文件：
+     寻找修补后的img文件：
      adb shell find /storage/emulated/0 -name "magisk*" 2>/dev/null
 
      文件名：
