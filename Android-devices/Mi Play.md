@@ -4,7 +4,7 @@
   - 手机型号：小米Play
   - 系统：安卓8.1（MIUI v11）
   - 手机现状：手机屏幕漏液损坏，目前右边30%无法显示，其他硬件目前正常，电池寿命未知
-  - 
+
 ![Mi Play](Image/Mi_Play_Phone.jpg)
 
 ## 目标
@@ -14,13 +14,18 @@
   4. 打造成nmap网络探针
 
 ## 技术栈
-  - ADB
+  - Android Debug Bridge
   - scrcpy
   - Magisk Patch
-  - termux
+  - OpenSSH
+  - Tailscale
+  - Termux
   - nmap
 
-## 无头ADB控制（达成）
+## 无头ADB控制
+  ### 原理：
+    电脑 → adb → Android → /system/bin/sh（安卓自带，也是绝大多数adb shell进入的地方）
+  
   1. 手机开启USB调试
   2. mac安装Android Debug Bridge
       `brew install --cask android-platform-tools`
@@ -75,6 +80,7 @@ Killed
 ## Root
   1. 解锁BL（去闲鱼找万能的暴躁技术老哥半小时解决，准备Windows电脑,数据线和UU远程桌面）
   2. 救砖准备工作
+     
      2.1 确认当前ROM
        ```
        charlieyin@mac ~ % adb shell getprop ro.build.fingerprint
@@ -115,23 +121,23 @@ Killed
      2.7 保存 Fastboot 信息
        `fastboot getvar all 2>&1 | tee ~/Documents/Mi_Play_ROM/Backup/fastboot-info.txt`
      
-  4. 下载Magisk`https://github.com/topjohnwu/magisk/releases`然后安装
+  3. 下载Magisk`https://github.com/topjohnwu/magisk/releases`然后安装
        `adb install Magisk-v30.7.apk`
      ![Mi Play](Image/Magisk_before_root.jpg)
 
      初次打开Magisk画面，Ramdisk显示否
      
-  6. 把 boot 镜像从电脑复制到手机
+  4. 把 boot 镜像从电脑复制到手机
        `adb push /Users/charlieyin/Documents/Mi_Play_ROM/Backup/original_boot.img /sdcard/Download/`
        `adb shell ls -lh /sdcard/Download/original_boot.img`
      
-  8. Magisk修复镜像
+  5. Magisk修复镜像
      - 保持强制加密
        ![Mi Play](Image/mandatory_encryption.png)
        
      - 选择修补文件，找到刚刚从电脑传到手机的original_boot.img，位于Download里，并修复
   
-  9. 把修补后的镜像拉回Mac
+  6. 把修补后的镜像拉回Mac
      ```
      寻找修补后的img文件：
      adb shell find /storage/emulated/0 -name "magisk*" 2>/dev/null
@@ -143,15 +149,15 @@ Killed
      adb pull /storage/emulated/0/Download/magisk_patched-30700_XRh60.img \
 ~/Documents/Mi_Play_ROM/Magisk/
      ```
-  8. 确认镜像大小（应该在32MB左右，实际上34.3MB）
+  7. 确认镜像大小（应该在32MB左右，实际上34.3MB）
 
-  9. 确认Fastboot 还能正常工作
+  8. 确认Fastboot 还能正常工作
       ```
       adb reboot bootloader
       fastboot devices
       ```
       
-  10. 把修补好的img刷回去,等待重启进入系统
+  9. 把修补好的img刷回去,等待重启进入系统
       ```
       cd ~/Documents/Mi_Play_ROM/Magisk
 
@@ -162,7 +168,7 @@ Killed
       ![Mi Play](Image/flash_success.png)
       
 
-  12. 获取root权限
+  10. 获取root权限
       打开面具后电脑输入
       ```
       adb shell
