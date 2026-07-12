@@ -88,10 +88,12 @@ Success
   
     /debug_ramdisk:/sbin:/sbin/su:/su/bin:/su/xbin:/system/bin:/system/xbin
     ```
+    
     而nmap这种在Termux同个pkg下载的软件文件路径在：
     ```
     /data/data/com.termux/files/usr/bin
     ```
+    
     因此Root Shell找不到nmap指令
   
   
@@ -100,6 +102,7 @@ Success
     export PATH=/data/data/com.termux/files/usr/bin:$PATH
     echo $PATH
     ```
+    
     长久方案是安装tsu。操作如下：
     ```
     pkg install root-repo
@@ -108,6 +111,7 @@ Success
   
     echo $PATH（可选，打印当前的Shell环境变量，只要出现termux/files就说明路径已继承）
     ```
+    
     - 普通su: Termux → su → Root → Android原生Shell（只剩系统PATH）
     - tsu: Termux → 保存环境变量 → su → 恢复环境变量 → Root + Termux
   
