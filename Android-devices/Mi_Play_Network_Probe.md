@@ -81,6 +81,14 @@ Success
 
   nmap --version
   ```
-  
+  ### 问题3: Termux不在Root shell路径上，没法开启nmap SU权限扫描
+  ~ $ su lotus:/data/data/com.termux/files/home # echo $PATH /debug_ramdisk:/sbin:/sbin/su:/su/bin:/su/xbin:/system/bin:/system/xbin
+  临时修复:
+  ```
+  export PATH=/data/data/com.termux/files/usr/bin:$PATH
+  echo $PATH
+  ```
+  更好方案：
+  安装tsu
 
 
