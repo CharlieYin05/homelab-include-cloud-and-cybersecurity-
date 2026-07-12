@@ -1,12 +1,13 @@
 # 探针计划
 
-## 目标功能
+## 目标
   - 远程控制
   - nmap局域网端口扫描
-  - ping服务器测验吃
+  - ping服务器测验
 
 ## 1. 恢复出厂设置
   开机后开启USB调试
+  ![factory](Image/Factory reset.png)
 
 ## 2. 重新安装Magisk并安装TermuX
   ```
@@ -17,6 +18,7 @@
   adb install Magisk-v30.7.apk
   ```
   ### 问题1：恢复出厂设置后无法安装Magisk，执行su后没有反应
+    ![stuck](Image/Magisk_stuck.png)
     ```
     charlieyin@mac ~ % adb shell
     lotus:/ $ which su
