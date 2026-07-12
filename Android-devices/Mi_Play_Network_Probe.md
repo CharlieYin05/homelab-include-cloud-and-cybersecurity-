@@ -16,7 +16,7 @@
 
   adb install Magisk-v30.7.apk
   ```
-  ### 问题1:恢复出厂设置后无法安装Magisk，执行su后没有反应
+  ### 问题1：恢复出厂设置后无法安装Magisk，执行su后没有反应
     ```
     charlieyin@mac ~ % adb shell
     lotus:/ $ which su
@@ -30,9 +30,17 @@
     ```
     解决方法：卸载开机自带的Magisk，重新安装
   
-## 3. 安装tailscale
+## 3. 安装termux
+  ### 问题2：即使开启USB安装页无法ABD安装termux(疑似MIUI拦截）
+  ```
+  charlieyin@mac ~/Documents/Android/Termux % adb install termux-app_v0.118.3+github-debug_arm64-v8a.apk
+Performing Streamed Install
+adb: failed to install termux-app_v0.118.3+github-debug_arm64-v8a.apk: Failure [INSTALL_FAILED_USER_RESTRICTED: Install canceled by user]
+```
 
-## 4. 安装nmap
+## 4. 安装tailscale
+
+## 5. 安装nmap
 
 ## 5. 安装BusyBox
 
