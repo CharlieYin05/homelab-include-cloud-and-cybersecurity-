@@ -108,7 +108,7 @@ Success
 
   pkg install tsu
   
-  echo $PATH（可选，打印当前的Shell环境变量，只要出现termux/files就说明路径已继承）
+  echo $PATH（可选，打印当前的Root Shell路径，只要出现termux/files就说明路径已继承）
   ```
   #### 原理：
   - 普通su: Termux → su → Root → Android原生Shell（只剩系统PATH）
