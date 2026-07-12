@@ -45,8 +45,35 @@ charlieyin@mac ~/Documents/Android/Termux % adb shell su -c "pm install -r /data
 Success
 ```
 ## 4. 安装tailscale
+  ```
+  adb install tailscale-android-universal-1.98.8.apk
+  ```
+  然后登陆账号并记住tailscale IP地址
+  
+## 5. 安装SSH
+  进入Termux后：
+  ```
+  pkg update
+  pkg upgrade
+  pkg install openssh
+  sshd -V
+  ```
+  记录并设置Termux用户密码
+  ```
+  whoami
 
-## 5. 安装nmap
+  passwd
+  ```
+
+  开启SSH并查看SSH端口：
+  ```
+  sshd
+
+  ss -ltn
+  ```
+  mac SSH到手机
+  `ssh -p 8022 u0_aXXX@100.XXX.XX.XX`
+  ```
 
 ## 5. 安装BusyBox
 
