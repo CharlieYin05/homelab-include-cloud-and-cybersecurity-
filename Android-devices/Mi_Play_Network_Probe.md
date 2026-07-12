@@ -58,7 +58,8 @@ Success
   pkg install openssh
   sshd -V
   ```
-  记录并设置Termux用户密码
+
+  记录并设置Termux用户密码:
   ```
   whoami
 
@@ -71,10 +72,15 @@ Success
 
   ss -ltn
   ```
-  mac SSH到手机
+  mac SSH到手机:
   `ssh -p 8022 u0_aXXX@100.XXX.XX.XX`
+
+## 6.安装nmap
   ```
+  pkg install nmap
 
-## 5. 安装BusyBox
+  nmap --version
+  ```
+  
 
-## 6. 安装Python
+
