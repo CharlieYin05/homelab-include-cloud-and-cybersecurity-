@@ -81,10 +81,12 @@ Success
 
   nmap --version
   ```
-  ### 问题3: Root shell没有继承Termux的环境，没法开启nmap SU扫描
+  ### 问题3: Root shell没有继承Termux的环境，没法开启nmap ROOT权限扫描
   su后进入的是安卓自己的shell，它的路径在:
   ```
-  ~ $ su lotus:/data/data/com.termux/files/home # echo $PATH /debug_ramdisk:/sbin:/sbin/su:/su/bin:/su/xbin:/system/bin:/system/xbin
+  /data/data/com.termux/files/home # echo $PATH
+
+  /debug_ramdisk:/sbin:/sbin/su:/su/bin:/su/xbin:/system/bin:/system/xbin
   ```
   而nmap这种在Termux同个pkg下载的软件文件路径在：
   ```
@@ -93,12 +95,12 @@ Success
   因此Root Shell找不到nmap指令
 
 
-  临时修复（只对当前这一次Root Shell生效），告诉Root Shell找程序时先去Termux 的 bin 目录看看。进入Root Shell后输入:
+  临时修复（只对当前这一次Root Shell生效），告诉Root Shell找程序时先去Termux的bin目录看看。进入Root Shell后输入:
   ```
   export PATH=/data/data/com.termux/files/usr/bin:$PATH
   echo $PATH
   ```
-  更好方案：
+  长久方案：
   安装tsu
 
 测试nmap
