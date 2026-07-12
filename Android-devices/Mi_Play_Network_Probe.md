@@ -111,8 +111,8 @@ Success
   echo $PATH（可选，打印当前的Shell环境变量，只要出现termux/files就说明路径已继承）
   ```
   #### 原理：
-    - 普通su: Termux → su → Root → Android原生Shell（只剩系统PATH）
-    - tsu: Termux → 保存环境变量 → su → 恢复环境变量 → Root + Termux
+  - 普通su: Termux → su → Root → Android原生Shell（只剩系统PATH）
+  - tsu: Termux → 保存环境变量 → su → 恢复环境变量 → Root + Termux
   
 
 测试nmap
