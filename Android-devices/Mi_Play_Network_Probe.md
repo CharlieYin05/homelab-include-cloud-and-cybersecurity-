@@ -92,7 +92,7 @@ Success
   /debug_ramdisk:/sbin:/sbin/su:/su/bin:/su/xbin:/system/bin:/system/xbin
   ```
     
-  而nmap这种在Termux同个pkg下载的软件文件路径在：
+  而nmap这种在Termux里通过pkg下载的软件文件路径在：
   ```
   /data/data/com.termux/files/usr/bin
   ```
