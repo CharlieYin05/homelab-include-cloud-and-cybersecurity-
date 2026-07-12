@@ -18,8 +18,7 @@
   adb install Magisk-v30.7.apk
   ```
   ### 问题1：恢复出厂设置后无法安装Magisk，执行su后没有反应
-    ![Stuck](Image/Magisk_Stuck.png)
-    
+  ![Stuck](./Image/Magisk_Stuck.png)
     ```
     charlieyin@mac ~ % adb shell
     lotus:/ $ which su
