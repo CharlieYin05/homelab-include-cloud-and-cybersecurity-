@@ -20,19 +20,18 @@
   ### 问题1：恢复出厂设置后无法安装Magisk，执行su后没有反应
   ![Stuck](./Image/Magisk_Stuck.png)
     
-    ```
-    charlieyin@mac ~ % adb shell
-    lotus:/ $ which su
-    /sbin/su
-    lotus:/ $ su -v
-    30.7:MAGISKSU
-    lotus:/ $ su
-    whomai
-    whoami
-    id
-    ```
-    
-    解决方法：卸载开机自带的Magisk，重新安装
+  ```
+  charlieyin@mac ~ % adb shell
+  lotus:/ $ which su
+  /sbin/su
+  lotus:/ $ su -v
+  30.7:MAGISKSU
+  lotus:/ $ su
+  whomai
+  whoami
+  id
+  ```  
+  解决方法：卸载开机自带的Magisk，重新安装
   
 ## 3. 安装Termux
   ### 问题2：即使开启USB安装也无法ABD安装termux(疑似MIUI拦截）
