@@ -82,26 +82,35 @@ Success
   nmap --version
   ```
   ### 问题3: Root shell没有继承Termux的环境，没法开启nmap ROOT权限扫描
-  su后进入的是安卓自己的shell，它的路径在:
-  ```
-  /data/data/com.termux/files/home # echo $PATH
-
-  /debug_ramdisk:/sbin:/sbin/su:/su/bin:/su/xbin:/system/bin:/system/xbin
-  ```
-  而nmap这种在Termux同个pkg下载的软件文件路径在：
-  ```
-  /data/data/com.termux/files/usr/bin
-  ```
-  因此Root Shell找不到nmap指令
-
-
-  临时修复（只对当前这一次Root Shell生效），告诉Root Shell找程序时先去Termux的bin目录看看。进入Root Shell后输入:
-  ```
-  export PATH=/data/data/com.termux/files/usr/bin:$PATH
-  echo $PATH
-  ```
-  长久方案：
-  安装tsu
+    su后进入的是安卓自己的shell，它的路径在:
+    ```
+    /data/data/com.termux/files/home # echo $PATH
+  
+    /debug_ramdisk:/sbin:/sbin/su:/su/bin:/su/xbin:/system/bin:/system/xbin
+    ```
+    而nmap这种在Termux同个pkg下载的软件文件路径在：
+    ```
+    /data/data/com.termux/files/usr/bin
+    ```
+    因此Root Shell找不到nmap指令
+  
+  
+    临时修复（只对当前这一次Root Shell生效），告诉Root Shell找程序时先去Termux的bin目录看看。进入Root Shell后输入:
+    ```
+    export PATH=/data/data/com.termux/files/usr/bin:$PATH
+    echo $PATH
+    ```
+    长久方案是安装tsu。操作如下：
+    ```
+    pkg install root-repo
+  
+    pkg install tsu
+  
+    echo $PATH（可选，打印当前的Shell环境变量，只要出现termux/files就说明路径已继承）
+    ```
+    - 普通su: Termux → su → Root → Android原生Shell（只剩系统PATH）
+    - tsu: Termux → 保存环境变量 → su → 恢复环境变量 → Root + Termux
+  
 
 测试nmap
 TCP Connect | nmap -sT 127.0.0.1
