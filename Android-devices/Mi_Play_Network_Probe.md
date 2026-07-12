@@ -75,20 +75,41 @@ Success
   mac SSH到手机:
   `ssh -p 8022 u0_aXXX@100.XXX.XX.XX`
 
-## 6.安装nmap
+## 6.安装与测试nmap
   ```
   pkg install nmap
 
   nmap --version
   ```
-  ### 问题3: Termux不在Root shell路径上，没法开启nmap SU权限扫描
+  ### 问题3: Root shell没有继承Termux的环境，没法开启nmap SU扫描
+  su后进入的是安卓自己的shell，它的路径在:
+  ```
   ~ $ su lotus:/data/data/com.termux/files/home # echo $PATH /debug_ramdisk:/sbin:/sbin/su:/su/bin:/su/xbin:/system/bin:/system/xbin
-  临时修复:
+  ```
+  而nmap这种在Termux同个pkg下载的软件文件路径在：
+  ```
+  /data/data/com.termux/files/usr/bin
+  ```
+  因此Root Shell找不到nmap指令
+
+
+  临时修复（只对当前这一次Root Shell生效），告诉Root Shell找程序时先去Termux 的 bin 目录看看。进入Root Shell后输入:
   ```
   export PATH=/data/data/com.termux/files/usr/bin:$PATH
   echo $PATH
   ```
   更好方案：
   安装tsu
+
+测试nmap
+TCP Connect | nmap -sT 127.0.0.1
+SYN Scan (Root) | nmap -sS 127.0.0.1
+UDP Scan (Root) | nmap -sU 127.0.0.1
+OS Detection (Root) | nmap -O 127.0.0.1
+
+
+
+
+  
 
 
