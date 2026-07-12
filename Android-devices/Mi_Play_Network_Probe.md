@@ -79,11 +79,11 @@ Success
   `ssh -p 8022 u0_aXXX@100.XXX.XX.XX`
 
 ## 6.安装与测试nmap
-  ```
-  pkg install nmap
+```
+pkg install nmap
 
-  nmap --version
-  ```
+nmap --version
+```
   ### 问题3: Root shell没有继承Termux的环境，没法开启nmap ROOT权限扫描
   su后进入的是安卓自己的shell，它的路径在:
   ```
@@ -118,11 +118,11 @@ Success
   - tsu: Termux → 保存环境变量 → su → 恢复环境变量 → Root + Termux
   
 
-测试nmap
-TCP Connect | nmap -sT 127.0.0.1
-SYN Scan (Root) | nmap -sS 127.0.0.1
-UDP Scan (Root) | nmap -sU 127.0.0.1
-OS Detection (Root) | nmap -O 127.0.0.1
+测试nmap：
+  - TCP Connect | nmap -sT 127.0.0.1
+  - SYN Scan (Root) | nmap -sS 127.0.0.1
+  - UDP Scan (Root) | nmap -sU 127.0.0.1
+  - OS Detection (Root) | nmap -O 127.0.0.1
 
 
 
