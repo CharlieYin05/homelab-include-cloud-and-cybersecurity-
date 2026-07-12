@@ -4,13 +4,13 @@
   1. 尝试Delate All
   2. 如果失败寻找引用，遵循一下关系一个个删：
   Subnet
-    ↓
+     →
 Route Table
-    ↓
+     →
 0.0.0.0/0 → Internet Gateway（把这里的Route Rules删了）
-    ↓
+     →
 Internet Gateway
-    ↓
+     →
    VCN
 
 ## 坑：VNIC
