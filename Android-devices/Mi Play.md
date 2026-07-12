@@ -118,6 +118,7 @@ Killed
   4. 下载Magisk`https://github.com/topjohnwu/magisk/releases`然后安装
        `adb install Magisk-v30.7.apk`
      ![Mi Play](Image/Magisk_before_root.jpg)
+
      初次打开Magisk画面，Ramdisk显示否
      
   6. 把 boot 镜像从电脑复制到手机
@@ -127,6 +128,7 @@ Killed
   8. Magisk修复镜像
      - 保持强制加密
        ![Mi Play](Image/mandatory_encryption.png)
+       
      - 选择修补文件，找到刚刚从电脑传到手机的original_boot.img，位于Download里，并修复
   
   9. 把修补后的镜像拉回Mac
@@ -157,8 +159,10 @@ Killed
 
       fastboot reboot
       ```
+      ![Mi Play](Image/flash_success.png)
+      
 
-  11. 获取root权限
+  12. 获取root权限
       打开面具后电脑输入
       ```
       adb shell
