@@ -15,7 +15,10 @@
 
 ### 1.本地准备
 
-#### 1.1 requirements.txt里添加PyMySQL
+#### 1.1 requirements.txt里添加PyMySQL并本地下载MySQL
+  ```
+  pip install -r requirements.txt
+  ```
 
 #### 1.2 改Flask配置文件
   进入 app/config.py，把写死的连接SQLite:
