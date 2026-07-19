@@ -75,4 +75,5 @@ Jun 30 19:16:15 cy-server tailscaled[4105367]: health(warnable=login-state): err
 3. 像Tailscale官方反馈这个问题
 4. 定期检查cy-server这种关键节点是否在线
 
-
+## 结论
+在节点重新注册时，客户端收到了异常的Control Panel响应（包括 unexpected end of JSON input 和 502 Bad Gateway），导致重新注册失败。具体异常来源（服务端、网络中间设备、还是客户端 Bug）无法仅凭这些日志确定。
