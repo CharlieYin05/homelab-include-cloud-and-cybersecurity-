@@ -47,7 +47,7 @@ Jun 29 18:13:59 cy-server tailscaled[4105367]: control: RegisterReq: got respons
 Jun 29 18:13:59 cy-server tailscaled[4105367]: control: Generating a new nodekey.
 ```
 
-然后Admin Console要求服务器重新登陆以获得加入Tailnet的资格：
+然后Tailscale Control Plane要求服务器重新登陆以获得加入Tailnet的资格：
 Jun 29 18:13:59 cy-server tailscaled[4105367]: control: RegisterReq: got response; nodeKeyExpired=false, machineAuthorized=false; authURL=true
 Jun 29 18:13:59 cy-server tailscaled[4105367]: control: AuthURL is https://login.tailscale.com/a/XXXXXXXXX
 
@@ -60,18 +60,19 @@ Jun 30 19:16:15 cy-server tailscaled[4105367]: health(warnable=login-state): err
 ```
 `unexpected end of JSON input` 不是正常的认证失败日志。但是客户端期待收到一份完整的JSON响应，却实际收到的是截断的内容、空响应，或者一个 HTML 错误页。
 
-而后期的 `http 502: Bad gateway` 则进一步说明当时的Admin Console返回了502
+而后期的 `http 502: Bad gateway` 证明Tailscale Control Plane在节点重新注册过程中返回异常响应（502/不完整JSON），导致重新注册失败。
 
-## 推断
+## 事故推断
 1. 6 月 29 日 Node Key 到期（这是预期行为）
-2. 客户端尝试自动续期（也是预期行为）
-3. Admin Console返回异常（502 / 不完整 JSON），导致续期失败（这是异常）。
-4. 节点（服务器）进入 NeedsLogin
+2. 客户端发现 Node Key 已过期，尝试重新生成 Node Key来注册（也是预期行为）
+3. Control Plane返回异常（502/不完整JSON），导致续期失败（这是异常）
+4. 节点进入 NeedsLogin
 5. 今天手动执行 tailscale up，重新完成注册
 
 ## 修复方案
 1. 服务器开启Disable key expiry
 2. 未来搭建第二个备用回家方案
 3. 像Tailscale官方反馈这个问题
+4. 定期检查cy-server这种关键节点是否在线
 
 
