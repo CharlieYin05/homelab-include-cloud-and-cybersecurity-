@@ -45,30 +45,30 @@ Least Privilege
 
 Phase 1
 =================
-VPN
-Firewall
-Samba
-ACL
-Monitoring
-Backup
+- VPN
+- Firewall
+- Samba
+- ACL
+- Monitoring
+- Backup
 
 ↓
 
 Phase 2
 =================
-Docker
-Immich
-HTTPS
-Reverse Proxy
-Photo Permission
+- Docker
+- Immich
+- HTTPS
+- Reverse Proxy
+- Photo Permission
 
 ↓
 
 Phase 3
 =================
-Suricata
-Grafana
-Loki
-Prometheus
-Alert
-Incident Response
+- Suricata
+- Grafana
+- Loki
+- Prometheus
+- Alert
+- Incident Response
