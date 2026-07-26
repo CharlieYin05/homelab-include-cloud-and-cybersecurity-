@@ -71,3 +71,12 @@ Phase 3
 - Prometheus
 - Alert
 - Incident Response
+
+↓
+
+Phase 4（需要大财力）
+──────────────
+Local LLM
+VLM
+Agent
+自然语言搜索照片
