@@ -10,6 +10,7 @@
 - 数据保护（定期冷备份在其他硬盘）
 
 ### *最小权限
+```
 Least Privilege
 ├── Network Access Control
 │     ├── Router NAT
@@ -21,7 +22,8 @@ Least Privilege
       ├── Samba Users
       ├── Shared Folder
       └── POSIX ACL (rwx)
-      
+```
+
 ## 目标1（暂定）
 - 所有远程访问只能通过 Tailscale。
 - 外部用户只看到文件服务器本身。
