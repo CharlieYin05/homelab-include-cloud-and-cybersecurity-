@@ -74,9 +74,9 @@ Phase 3
 
 ↓
 
-Phase 4（需要大财力）
-──────────────
-Local LLM
-VLM
-Agent
-自然语言搜索照片
+Phase 4（可选，需要大财力）
+=================
+- Local LLM
+- VLM
+- Agent
+- 自然语言搜索照片
