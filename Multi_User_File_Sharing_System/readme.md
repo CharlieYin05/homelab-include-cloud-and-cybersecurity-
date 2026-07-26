@@ -1,6 +1,6 @@
 # 家庭零信任文件共享系统
 
-本项目搭建一台基于Tailscale的零信任文件共享系统。
+本项目不是为了寻找最简单的文件共享方案，而是以"共享一个文件夹"为目标，通过渐进式工程实践学习 Linux、网络、安全和运维。
 
 设计原则：
 - 分层防御（Internet → LAN隔离 → Tailscale（身份认证） → Tailscale Grants（网络访问控制） → nftables（主机防火墙）→ Samba（文件共享） → POSIX ACL（文件权限））
