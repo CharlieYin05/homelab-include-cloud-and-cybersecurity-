@@ -20,7 +20,6 @@ Debian GNU/Linux 13 (trixie)
 - nftables
 - vnstat
 - curl
-- git
 - htop
 - tree
 
