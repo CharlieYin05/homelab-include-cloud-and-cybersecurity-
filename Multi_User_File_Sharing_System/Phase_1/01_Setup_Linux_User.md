@@ -7,7 +7,6 @@
 ## 权限模型
 ### 第一层（固定）：RBAC
 
-```
 | 共享目录          | 角色组                    | 权限         |
 | ---------------- | ------------------------ | ----------- |
 | `public`         | `cy_public_ro`           | 只读         |
@@ -15,7 +14,6 @@
 | `restriction`    | `cy_restriction_ro`      | 只读         |
 | `restriction`    | `cy_restriction_rw`      | 读写         |
 | `private`        | `cy_private_rw`          | 读写（管理员） |
-```
 
 #### 分组：
 ```
@@ -66,3 +64,18 @@ sudo groupadd cy_private_rw
 getent group | grep "^cy_"
 ```
 
+### 2.创建共享目录
+```
+sudo mkdir -p /srv/storage/shares/public
+sudo mkdir -p /srv/storage/shares/restriction
+sudo mkdir -p /srv/storage/shares/private
+```
+
+### 2.5 确定文件夹Onwer
+| 目录          | Owner   | Group            |
+| ----------- | ------- | ----------------- |
+| public      | root    | cy_public_rw      |
+| restriction | root    | cy_restriction_rw |
+| private     | 我 | cy_private_rw     |
+
+### 3. 
