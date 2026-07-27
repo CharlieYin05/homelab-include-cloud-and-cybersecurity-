@@ -127,9 +127,12 @@ sudo setfacl -m g:cy_restriction_ro:rx /srv/storage/shares/restriction
 ```
 #### 5.2 设置给 `public`，`restriction` 目录中的新内容（文件和子目录）自动继承 Default ACL (RX)
 以后在 public 下新创建的文件和子目录，会自动拥有 `cy_public_ro` 这条 ACL。
+输入与验证：
 ```
 sudo setfacl -d -m g:cy_public_ro:rx /srv/storage/shares/public
 sudo setfacl -d -m g:cy_restriction_ro:rx /srv/storage/shares/restriction
+
+
 ```
 
 ---
