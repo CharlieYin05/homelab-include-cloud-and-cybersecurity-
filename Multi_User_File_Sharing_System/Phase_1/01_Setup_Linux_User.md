@@ -5,18 +5,18 @@
 ---
 
 ## 权限模型
-Role-based access control（基于角色的访问控制）
-### 第一层：共享范围
+RBAC
+
 ```
-public
-restriction
-private
+| 共享目录          | 角色组                    | 权限         |
+| ---------------- | ------------------------ | ----------- |
+| `public`         | `cy_public_ro`           | 只读         |
+| `public`         | `cy_public_rw`           | 读写         |
+| `restriction`    | `cy_restriction_ro`      | 只读         |
+| `restriction`    | `cy_restriction_rw`      | 读写         |
+| `private`        | `cy_private_rw`          | 读写（管理员） |
 ```
-### 第二层：读写权限
-```
-RO
-RW
-```
+
 ### 分组：
 ```
 cy_public_ro
