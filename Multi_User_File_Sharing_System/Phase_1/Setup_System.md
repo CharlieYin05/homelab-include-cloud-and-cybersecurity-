@@ -17,7 +17,7 @@ Debian GNU/Linux 13 (trixie)
 ## 安装系统工具
 - samba（文件共享服务）
 - acl（文件权限管理）
-- nftables（系统防火墙）
+- nftables（系统防火墙，控制端口）
 - vnstat（流量统计工具）
 - curl（命令行网络工具，安装tailscale用）
 - htop（Linux版的任务管理器）
