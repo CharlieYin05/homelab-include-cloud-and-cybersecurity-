@@ -5,7 +5,7 @@
 ---
 
 ## 权限模型
-RBAC
+### 第一层（固定）：RBAC
 
 ```
 | 共享目录          | 角色组                    | 权限         |
@@ -17,7 +17,7 @@ RBAC
 | `private`        | `cy_private_rw`          | 读写（管理员） |
 ```
 
-### 分组：
+#### 分组：
 ```
 cy_public_ro
     ├── guest1
@@ -39,6 +39,18 @@ cy_restriction_rw
 cy_private
     └── cyin026
 ```
+
+### 第二层（灵活）：ACL
+用 ACL 管理共享目录里面的特殊子目录
+例如：
+```
+restriction/
+├── Bob_and_Charles_only
+├── Alice_only
+├── Finance
+└── Project_X
+```
+
 
 ## 过程
 ### 1.创建五个用户组并检查
