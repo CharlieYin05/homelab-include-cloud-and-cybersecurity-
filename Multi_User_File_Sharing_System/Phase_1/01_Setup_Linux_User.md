@@ -87,7 +87,7 @@ sudo chown cyin026:cy_private_rw /srv/storage/shares/private
 ```
 
 ### 4. 设置基础 `chmod`
-以后所有新文件都会自动继承目录所属 Group
+以后所有 `public_rw` , `restriction_rw` 和 `private` 下新创建的文件和子目录，会自动自动继承目录所属 Group 的权限
 ```
 2770
 │││└── Other（其他用户）
