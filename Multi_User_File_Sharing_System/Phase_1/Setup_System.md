@@ -20,7 +20,7 @@ Debian GNU/Linux 13 (trixie)
 - nftables（系统防火墙，控制端口）
 - vnstat（流量统计工具）
 - curl（命令行网络工具，安装tailscale用）
-- htop（Linux版的任务管理器）
+- htop（Linux版任务管理器）
 - tree（显示目录结构工具）
 
 ## 创建目录结构
