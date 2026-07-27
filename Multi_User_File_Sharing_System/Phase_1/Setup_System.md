@@ -23,14 +23,62 @@ Debian GNU/Linux 13 (trixie)
 - htop（Linux版任务管理器）
 - tree（显示目录结构工具）
 
-## 创建目录结构
+## 目录结构
+### 未来三盘服务器文件目录结构：
 ```
-sudo mkdir -p /srv/shares/shared
-sudo mkdir -p /srv/logs/samba
-sudo mkdir -p /srv/logs/firewall
-sudo mkdir -p /srv/backups
-sudo mkdir -p /srv/immich
+256GB SSD（系统盘）
+├── Debian
+├── Docker / Podman
+├── Samba
+├── Tailscale
+├── nftables
+├── /etc                ← 所有配置
+├── /var                ← 系统运行数据、数据库、缓存、系统日志
+├── /opt                ← 应用程序（如 Immich Compose 文件）
+└── 其他系统文件
+
+2TB SSD（数据盘）
+└── /srv
+    ├── storage
+    │   ├── shares
+    │   └── immich
+    ├── logs
+    │   ├── samba
+    │   ├── firewall
+    │   ├── traffic
+    │   └── ids          （未来）
+    └── backups
+
+2TB HDD（冷备份）
+├── /srv                ← 完整数据备份
+├── /etc                ← 配置备份
+├── ACL 导出
+└── 恢复脚本
 ```
+
+### 目前单盘文件服务器目录结构：
+256GB SSD
+│
+├── /
+│
+├── /etc
+├── /opt
+├── /var
+│
+└── /srv
+    ├── storage
+    │   ├── shares
+    │   └── immich
+    │
+    ├── logs
+    │   ├── samba
+    │   ├── firewall
+    │   └── traffic
+    │
+    └── backups
+
+### 创建目前文件目录
+
 
 ## 设置路由器
 绑定FSS服务器静态IP
