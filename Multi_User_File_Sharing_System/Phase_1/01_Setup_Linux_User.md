@@ -138,7 +138,7 @@ sudo setfacl -d -m g:cy_restriction_ro:rx /srv/storage/shares/restriction
 ### 基础概念：用户和文件都有Group
 输入：
 ```
-id cyin026
+id cyin026                
 ```
 输出：
 ```
@@ -150,15 +150,14 @@ groups=1000(cyin026),1002(cy_public_rw),1004(cy_restriction_rw),1005(cy_private_
 ```
 用户名：cyin026
 
-Primary Group（gid）：
+Primary Group（gid）：            ← cyin026 所创建的文件/文件夹自动属于cyin026 文件 Group
     cyin026            
 
-Supplementary Groups（groups）：
-    cy_public_rw
+Supplementary Groups（groups）：  ← cyin026 被手动分配到的 Groups
+    cy_public_rw                ← cy_public_rw 即是用户group，也是文件group，相当于标签被用户和文件引用两次
     cy_restriction_rw
     cy_private_rw
 ```
-
 
 
 ### 第一层：chmod（比喻：建筑物的基础规则）
@@ -184,9 +183,37 @@ Group 是：
 ```
 cy_public_rw
 ```
+
 如果没有 SGID：
-- Alice 创建 `movie.mp4` 时该电影只能是和Alice相同的group人访问
-- Bob 创建的 `photo.jpg`时该照片只能是和Bob相同的group人访问
-有了 SGID：
-- 凡事有权限里面写入的人所创建的文件/文件夹自动继承 `public` 的 `group`，也即是 `cy_public_rw`
+- Charlie 创建 `movie.mp4` 该文件默认：
+```
+Owner = charlie
+Group = charlie（charlie的Primary Group)
+```
+之后哪怕Bob的Supplementary Groups里有cy_public_rw他也无法读写 `movie.mp4`。因为该文件的group只继承charlie的primary group。
+
+如果有 SGID：
+- Charlie 创建 `movie2.mp4` 该文件默认：
+```
+Owner = charlie
+Group = cy_public_rw
+```
+Bob能打开。
+
+### 第三层：ACL —— 基础规则不够用了
+chmod 最大的问题是它只能有一个 Group。
+当我需求变成两个组时，chmod 根本表达不了。例如：
+```
+public
+
+RW:
+cy_public_rw
+
+RO:
+cy_public_ro
+```
+ACL允许增加额外用户，额外组。
+
+### 第四层：Default ACL
+文件夹本体有了ACL，但是文件夹里面的子文件夹/文件怎么？就需要继承一个主文件的ACL
 
