@@ -201,18 +201,29 @@ Group = cy_public_rw
 Bob能打开。
 
 ### 第三层：ACL —— 基础规则不够用了
-chmod 最大的问题是它只能有一个 Group。
-当我需求变成两个组时，chmod 根本表达不了。例如：
-```
-public
+chmod 最大限制每个文件只能有一个 Group。ACL 则允许为多个用户或多个组分别指定权限。
 
-RW:
-cy_public_rw
-
-RO:
-cy_public_ro
+没有 ACL 的文件例子：
 ```
-ACL允许增加额外用户，额外组。
+Owner = Alice
+Group = cy_public_rw
+权限：
+Owner : rw-
+Group : rw-
+Other : ---
+```
+如果除了 `cy_public_rw` 有rw权限，还希望 `cy_public_rw` 的用户有r权限 chmod做不到。
+
+有 ACL 的文件例子
+```
+report.docx
+Owner = Alice
+Group = cy_public_rw
+ACL = group:cy_public_ro, group:auditor, user:jack
+```
+就能实现更多的用户/用户组能对该文件有独特权限
+
+
 
 ### 第四层：Default ACL
 文件夹本体有了ACL，但是文件夹里面的子文件夹/文件怎么？就需要继承一个主文件的ACL
