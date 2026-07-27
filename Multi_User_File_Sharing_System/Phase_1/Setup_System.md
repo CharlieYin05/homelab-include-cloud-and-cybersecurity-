@@ -23,7 +23,7 @@ Debian GNU/Linux 13 (trixie)
 - htop（Linux版任务管理器）
 - tree（显示目录结构工具）
 
-## 目录结构
+## 规划文件目录结构
 ### 未来三盘服务器文件目录结构：
 ```
 256GB SSD（系统盘）
@@ -78,8 +78,6 @@ Debian GNU/Linux 13 (trixie)
     │
     └── backups
 ```
-
-### 创建目前文件目录
 
 
 ## 设置路由器
