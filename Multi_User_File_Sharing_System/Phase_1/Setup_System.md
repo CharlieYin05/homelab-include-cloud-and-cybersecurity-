@@ -15,13 +15,22 @@
 Debian GNU/Linux 13 (trixie)
 
 ## 安装系统工具
-- samba
-- acl
-- nftables
-- vnstat
-- curl
-- htop
-- tree
+- samba（文件共享服务）
+- acl（文件权限管理）
+- nftables（系统防火墙）
+- vnstat（流量统计工具）
+- curl（命令行网络工具，安装tailscale用）
+- htop（Linux版的任务管理器）
+- tree（显示目录结构工具）
+
+## 创建目录结构
+```
+sudo mkdir -p /srv/shares/shared
+sudo mkdir -p /srv/logs/samba
+sudo mkdir -p /srv/logs/firewall
+sudo mkdir -p /srv/backups
+sudo mkdir -p /srv/immich
+```
 
 ## 遇到的问题
 | 阶段                | 问题                           | 原因                                       | 最终解决方案                                         |
