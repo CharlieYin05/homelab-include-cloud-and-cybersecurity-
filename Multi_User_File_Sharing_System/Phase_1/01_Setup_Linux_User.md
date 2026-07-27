@@ -24,7 +24,7 @@ sudo adduser rwuser
 sudo adduser rouser
 ```
 
-### 把rw和ro用户加入cyshare共享组并检查结果
+### 3.把rw和ro用户加入cyshare共享组并检查结果
 ```
 sudo usermod -aG cyshare rwuser
 sudo usermod -aG cyshare rouser
@@ -33,3 +33,5 @@ id rwuser
 id rouser
 getent group cyshare
 ```
+
+### 4.
