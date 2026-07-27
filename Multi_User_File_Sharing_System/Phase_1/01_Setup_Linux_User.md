@@ -73,7 +73,7 @@ sudo mkdir -p /srv/storage/shares/private
 
 ### 3. 设置Owner
 
-#### 确定文件夹Onwer
+#### 确定文件夹 Onwer
 | 目录          | Owner   | Group            |
 | ----------- | ------- | ----------------- |
 | public      | root    | cy_public_rw      |
@@ -86,7 +86,7 @@ sudo chown root:cy_restriction_rw /srv/storage/shares/restriction
 sudo chown cyin026:cy_private_rw /srv/storage/shares/private
 ```
 
-### 4. 设置基础 chmod
+### 4. 设置基础 `chmod`
 以后所有新文件都会自动继承目录所属 Group
 ```
 2770
@@ -118,3 +118,17 @@ sudo chmod 2770 /srv/storage/shares/public
 sudo chmod 2770 /srv/storage/shares/restriction
 sudo chmod 2770 /srv/storage/shares/private
 ```
+
+### 5.设置ACL 
+#### 5.1 给 `public` 和 `restriction` 额外授权 `cy_public_ro` 和 `cy_restriction_ro` 组可以 读 + 进入目录。
+```
+sudo setfacl -m g:cy_public_ro:rx /srv/storage/shares/public
+sudo setfacl -m g:cy_restriction_ro:rx /srv/storage/shares/restriction
+```
+#### 5.2 设置给 `public`，`restriction` 目录中的新内容（文件和子目录）自动继承 Default ACL (RX)
+以后在 public 下新创建的文件和子目录，会自动拥有 `cy_public_ro` 这条 ACL。
+```
+sudo setfacl -d -m g:cy_public_ro:rx /srv/storage/shares/public
+sudo setfacl -d -m g:cy_restriction_ro:rx /srv/storage/shares/restriction
+```
+
