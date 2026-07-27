@@ -5,11 +5,11 @@
 ---
 
 ## 配置
-CPU: Intel N95
-内存：SAMSUNG 12GB LPDDR5 4000 MT/s
-硬盘：WD SN740 256GB
-有线网卡：Realtek RTL8111 × 2
-无线网卡：Realtek RTL8822CE
+- CPU: Intel N95
+- 内存：SAMSUNG 12GB LPDDR5 4000 MT/s
+- 硬盘：WD SN740 256GB
+- 有线网卡：Realtek RTL8111 × 2
+- 无线网卡：Realtek RTL8822CE
 
 ## 系统
 Debian GNU/Linux 13 (trixie)
