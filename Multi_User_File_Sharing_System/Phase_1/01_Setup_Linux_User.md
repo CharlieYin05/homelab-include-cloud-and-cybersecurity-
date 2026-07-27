@@ -41,26 +41,16 @@ cy_private
 ```
 
 ## 过程
+### 1.创建五个用户组并检查
+```
+sudo groupadd cy_public_ro
+sudo groupadd cy_public_rw
 
-### 1.创建我的共享组(cyshare)
-```
-sudo groupadd cyshare
-```
+sudo groupadd cy_restriction_ro
+sudo groupadd cy_restriction_rw
 
-### 2.创建read write和read only用户
-```
-sudo adduser rwuser
-sudo adduser rouser
-```
+sudo groupadd cy_private_rw
 
-### 3.把rw和ro用户加入cyshare共享组并检查结果
-```
-sudo usermod -aG cyshare rwuser
-sudo usermod -aG cyshare rouser
-
-id rwuser
-id rouser
-getent group cyshare
+getent group | grep "^cy_"
 ```
 
-### 4.
