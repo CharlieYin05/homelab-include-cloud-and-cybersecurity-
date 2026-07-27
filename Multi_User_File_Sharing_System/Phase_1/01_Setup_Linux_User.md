@@ -39,7 +39,7 @@ cy_private
 ```
 
 ### 第二层（灵活）：ACL
-用 ACL 管理共享目录里面的特殊子目录
+用 ACL 管理共享目录里面的特殊子目录。
 例如：
 ```
 restriction/
@@ -71,11 +71,49 @@ sudo mkdir -p /srv/storage/shares/restriction
 sudo mkdir -p /srv/storage/shares/private
 ```
 
-### 2.5 确定文件夹Onwer
+### 3. 设置Owner
+
+#### 确定文件夹Onwer
 | 目录          | Owner   | Group            |
 | ----------- | ------- | ----------------- |
 | public      | root    | cy_public_rw      |
 | restriction | root    | cy_restriction_rw |
-| private     | 我 | cy_private_rw     |
+| private     | 我      | cy_private_rw     |
 
-### 3. 
+```
+sudo chown root:cy_public_rw /srv/storage/shares/public
+sudo chown root:cy_restriction_rw /srv/storage/shares/restriction
+sudo chown cyin026:cy_private_rw /srv/storage/shares/private
+```
+
+### 4. 先给三个文件夹设置基础 chmod
+以后所有新文件都会自动继承目录所属 Group
+```
+2770
+│││└── Other（其他用户）
+││└── Group（组）
+│└── Owner（拥有者）
+└── 特殊权限（Special SGID）
+```
+
+当用户访问一个文件时，Linux 大致会按这个逻辑判断：
+
+1. Owner（是不是Owner？是用Owner权限）
+    │
+    否
+    ▼
+2. ACL（有没有 ACL 针对这个用户？是使用 ACL）
+    │
+    否
+    ▼
+3. Group（是不是属于 Group？是使用Group权限
+    │
+    否
+    ▼  
+4. Other（使用 Other 权限）
+
+```
+sudo chmod 2770 /srv/storage/shares/public
+sudo chmod 2770 /srv/storage/shares/restriction
+sudo chmod 2770 /srv/storage/shares/private
+```
