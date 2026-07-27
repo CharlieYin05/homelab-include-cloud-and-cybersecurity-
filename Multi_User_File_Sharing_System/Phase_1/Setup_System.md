@@ -57,6 +57,7 @@ Debian GNU/Linux 13 (trixie)
 ```
 
 ### 目前单盘文件服务器目录结构：
+```
 256GB SSD
 │
 ├── /
@@ -76,6 +77,7 @@ Debian GNU/Linux 13 (trixie)
     │   └── traffic
     │
     └── backups
+```
 
 ### 创建目前文件目录
 
