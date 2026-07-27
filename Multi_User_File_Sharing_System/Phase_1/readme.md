@@ -24,7 +24,7 @@
 ⑥ 配置 smb.conf
         │
         ▼
-⑦ 测试 Windows 访问
+⑦ 测试 iOS, Android, macOS, Windows 访问
         │
         ▼
 ⑧ 配置 nftables
