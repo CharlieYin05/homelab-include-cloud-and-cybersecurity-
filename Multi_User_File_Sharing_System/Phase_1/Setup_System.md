@@ -39,15 +39,15 @@ Debian GNU/Linux 13 (trixie)
 
 2TB SSD（数据盘）
 └── /srv
-    ├── storage
+    ├── storage         ← 长期保存的业务数据
     │   ├── shares
     │   └── immich
-    ├── logs
+    ├── logs            ← 长期保存的审计、安全、网络日志
     │   ├── samba
     │   ├── firewall
     │   ├── traffic
-    │   └── ids          （未来）
-    └── backups
+    │   └── ids        （未来）
+    └── backups         ← 本机生成或暂存的备份文件
 
 2TB HDD（冷备份）
 ├── /srv                ← 完整数据备份
