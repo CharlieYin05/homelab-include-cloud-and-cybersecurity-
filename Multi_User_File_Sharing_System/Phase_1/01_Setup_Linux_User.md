@@ -4,12 +4,41 @@
 
 ---
 
-## 用户模型
-| 用户        | SSH | sudo | Samba | 用途    |
-| --------- | --- | ---- | ----- | ----- |
-| `我` | ✅   | ✅    | 可选    | 系统管理员 |
-| `rwuser`  | ❌   | ❌    | ✅     | 读写共享  |
-| `rouser`  | ❌   | ❌    | ✅     | 只读共享  |
+## 权限模型
+Role-based access control（基于角色的访问控制）
+### 第一层：共享范围
+```
+public
+restriction
+private
+```
+### 第二层：读写权限
+```
+RO
+RW
+```
+### 分组：
+```
+cy_public_ro
+    ├── guest1
+    ├── guest2
+    └── friendA
+
+cy_public_rw
+    ├── friendB
+    └── friendC
+
+cy_restriction_ro
+    ├── friendD
+    └── friendE
+
+cy_restriction_rw
+    ├── friendF
+    └── cyin026
+
+cy_private
+    └── cyin026
+```
 
 ## 过程
 
