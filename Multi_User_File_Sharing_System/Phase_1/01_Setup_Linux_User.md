@@ -86,7 +86,7 @@ sudo chown root:cy_restriction_rw /srv/storage/shares/restriction
 sudo chown cyin026:cy_private_rw /srv/storage/shares/private
 ```
 
-### 4. 先给三个文件夹设置基础 chmod
+### 4. 设置基础 chmod
 以后所有新文件都会自动继承目录所属 Group
 ```
 2770
@@ -98,15 +98,15 @@ sudo chown cyin026:cy_private_rw /srv/storage/shares/private
 
 #### 当用户访问一个文件时，Linux 大致会按这个逻辑判断：
 ```
-1. Owner（是不是Owner？是用Owner权限）
+1. Owner（是不是Owner？是就用Owner权限）
     │
     否
     ▼
-2. ACL（有没有 ACL 针对这个用户？是使用 ACL）
+2. ACL（有没有 ACL 针对这个用户？是就使用 ACL 权限）
     │
     否
     ▼
-3. Group（是不是属于 Group？是使用Group权限
+3. Group（是不是属于 Group？是就使用 Group 权限）
     │
     否
     ▼  
