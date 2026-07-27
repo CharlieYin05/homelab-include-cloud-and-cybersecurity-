@@ -96,8 +96,8 @@ sudo chown cyin026:cy_private_rw /srv/storage/shares/private
 └── 特殊权限（Special SGID）
 ```
 
-当用户访问一个文件时，Linux 大致会按这个逻辑判断：
-
+#### 当用户访问一个文件时，Linux 大致会按这个逻辑判断：
+```
 1. Owner（是不是Owner？是用Owner权限）
     │
     否
@@ -111,6 +111,7 @@ sudo chown cyin026:cy_private_rw /srv/storage/shares/private
     否
     ▼  
 4. Other（使用 Other 权限）
+```
 
 ```
 sudo chmod 2770 /srv/storage/shares/public
