@@ -132,3 +132,61 @@ sudo setfacl -d -m g:cy_public_ro:rx /srv/storage/shares/public
 sudo setfacl -d -m g:cy_restriction_ro:rx /srv/storage/shares/restriction
 ```
 
+---
+## Linux用户文件权限系统组成
+
+### 基础概念：用户和文件都有Group
+输入：
+```
+id cyin026
+```
+输出：
+```
+uid=1000(cyin026)
+gid=1000(cyin026)
+groups=1000(cyin026),1002(cy_public_rw),1004(cy_restriction_rw),1005(cy_private_rw)
+```
+翻译：
+```
+用户名：cyin026
+
+Primary Group（gid）：
+    cyin026            
+
+Supplementary Groups（groups）：
+    cy_public_rw
+    cy_restriction_rw
+    cy_private_rw
+```
+
+
+
+### 第一层：chmod（比喻：建筑物的基础规则）
+它只认识：
+```
+Owner
+Group
+Other
+```
+例如 `drwxrwx---` 就是：
+```
+Owner  → rwx
+Group  → rwx
+Other  → ---
+```
+
+### 第二层：SGID —— 自动保持 Group 一致
+假设文件夹是：
+```
+public
+```
+Group 是：
+```
+cy_public_rw
+```
+如果没有 SGID：
+- Alice 创建 `movie.mp4` 时该电影只能是和Alice相同的group人访问
+- Bob 创建的 `photo.jpg`时该照片只能是和Bob相同的group人访问
+有了 SGID：
+- 凡事有权限里面写入的人所创建的文件/文件夹自动继承 `public` 的 `group`，也即是 `cy_public_rw`
+
