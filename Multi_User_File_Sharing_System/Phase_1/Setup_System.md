@@ -14,7 +14,7 @@
 ## 系统
 Debian GNU/Linux 13 (trixie)
 
-## 安装的系统工具
+## 安装系统工具
 - samba
 - acl
 - nftables
