@@ -19,6 +19,25 @@
 
 ## 6. Security Controls
 
+管理员 SSH fss服务器
+```
+                    Internet
+                        │
+                 Tailscale Tailnet
+                        │
+          ┌─────────────┴─────────────┐
+          │                           │
+          ▼                           ▼
+     管理员设备                  网络中枢服务器
+ (MacBook/Windows)             (Jump Host)
+          │                           │
+          │ SSH（ACL允许）             │ SSH
+          │                           │
+          └─────────────┬─────────────┘
+                        ▼
+                  fss 文件服务器
+```
+
 ## 7. Residual Risks
 
 ## 8. Out of Scope
