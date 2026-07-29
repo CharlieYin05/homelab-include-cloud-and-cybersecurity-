@@ -20,18 +20,18 @@
 cy_public_ro
     ├── guest1
     ├── guest2
-    └── friendA
+    └── ...
 
 cy_public_rw
+    ├── friendA
+    └── cyin026
+
+cy_restriction_ro
     ├── friendB
     └── friendC
 
-cy_restriction_ro
-    ├── friendD
-    └── friendE
-
 cy_restriction_rw
-    ├── friendF
+    ├── friendD
     └── cyin026
 
 cy_private
@@ -197,7 +197,7 @@ Supplementary Groups（groups）：  ← cyin026 被手动分配到的 Groups
 ```
 
 
-### 第一层：chmod（比喻：建筑物的基础规则）
+### 第一层：chmod
 它只认识：
 ```
 Owner
@@ -353,7 +353,7 @@ default:other::---
 
 ---
 
-## 排错
+## 排错（已排除 Samba 认证后）
 ### Permission denied
 1. User 是否属于正确 Group？
 ```
