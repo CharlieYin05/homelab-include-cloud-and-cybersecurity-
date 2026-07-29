@@ -268,34 +268,90 @@ ACL = group:cy_public_ro, group:auditor, user:jack
 ---
 
 ## 实用指令
-#### 查看已有哪些组
+### 查看已有哪些组
 ```
 getent group
 ```
-或者指定的组
+或者查看指定条件的组
 ```
 getent group cy_public_rw
 ```
 
-#### 新建组
+### 新建组
 ```bash
-sudo groupadd cy_public_rw
+sudo groupadd 组名
 ```
 
-#### 新建用户
+### 新建用户
+```bash
+sudo useradd -m -s /bin/bash 用户名
+sudo passwd 用户名
+```
+说明：
 
-#### 把用户加入组
+- `-m`：建立 Home Directory
+- `-s`：指定登入 Shell
 
-#### 调整用户所在组
+### 把用户加入Supplementary Group
+```bash
+sudo usermod -aG 组名 用户名
+```
+说明：
+- `-a`：Append（追加。很重要，不写就是覆盖）
+- `-G`：Supplementary Groups
 
-#### 查看文件SGID (Owner, Group, 是否存在ACL）
+### 查看用户所在组
+```bash
+groups 用户名
+```
+
+### 查看文件/文件夹 的基本信息 (Owner、Group、权限、ACL）
+输入：
 ```
 ls -l /SRV/storage/shares/XXX/XXXX
 ```
-#### 查看文件/文件夹默认ACL
+输出（例子）
+```text
+-rw-rw----+ 1 cyin026 cy_public_rw test.txt
+```
+说明：
+- `-` 文件类型（这个例子是普通文件）
+- `1` 一个硬链接（不用管）
+- `rw-rw----` 是 Owner（rw-），group（rw-），Other（---） 的权限
+- Owner 是 `cyin026`
+- Group 是 `cy_public_rw`
+- `+`：表示存在 ACL
+
+
+#### 查看文件/文件夹的 ACL（包含基本信息）
+输入：
 ```
 getfacl /srv/storage/shares/XXX/XXX
 ```
+输出（public为例子）：
+```
+对象信息：
+# file: srv/storage/shares/public        ← 当前查看的是哪个文件或目录
+# owner: root                            ← Owner
+# group: cy_public_rw                    ← Group
+# flags: -s-                             ← 启用SGID
+
+Access ACL（当前目录权限）：
+user::rwx                                ← Owner权限
+group::rwx                               ← 同一个 Group (cy_public_rw) 用户所拥有的权限
+group:cy_public_ro:r-x                   ← 额外 Group 拥有的权限
+mask::rwx                                ← ACL 最大权限限制
+other::---                               ← Other 拥有的权限
+
+Default ACL（继承规则）：                   ← 新建的文件/子文件夹默认ACL，通常和ACL一样
+default:user::rwx                        
+default:group::rwx                       
+default:group:cy_public_ro:r-x           
+default:mask::rwx                        
+default:other::---                       
+```
+
+
 
 
 
