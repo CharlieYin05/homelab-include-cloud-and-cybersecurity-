@@ -63,8 +63,45 @@ Disk (/srv/storage)
 - Linux 账号负责授权（Authentication）
 
 
-
-
+---
+## 问题排查思路2.0
+```
+① 网络
+   │
+   ├─ ping
+   ├─ TCP 445
+   └─ smbd 是否运行
+        │
+        ▼
+② Share
+   │
+   ├─ testparm
+   └─ smbclient -L localhost
+        │
+        ▼
+③ 用户认证
+   │
+   ├─ pdbedit -L
+   ├─ smbpasswd
+   └─ journalctl
+        │
+        ▼
+④ Samba 配置
+   │
+   ├─ valid users
+   ├─ write list
+   └─ browseable
+        │
+        ▼
+⑤ Linux 权限
+   │
+   ├─ ls -l
+   ├─ getfacl
+   └─ id
+        │
+        ▼
+⑥ SELinux/AppArmor
+```
 
 
 
