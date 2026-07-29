@@ -131,9 +131,27 @@ sudo setfacl -m g:cy_restriction_ro:rx /srv/storage/shares/restriction
 ```
 sudo setfacl -d -m g:cy_public_ro:rx /srv/storage/shares/public
 sudo setfacl -d -m g:cy_restriction_ro:rx /srv/storage/shares/restriction
-
-
 ```
+
+### 6.把第一个用户 `cyin026` （管理员）加入到4个组里
+加入：
+```
+sudo usermod -aG \
+cy_public_ro,cy_public_rw,\
+cy_restriction_ro,cy_restriction_rw,\
+cy_private_rw \
+cyin026
+```
+退出重新登录SSH后检查：
+```
+groups
+```
+输出包含以下就说明成功：
+```
+cy_public_ro cy_public_rw cy_restriction_ro cy_restriction_rw cy_private_rw
+```
+
+### 7.验收
 
 ---
 ## Linux用户文件权限系统组成
