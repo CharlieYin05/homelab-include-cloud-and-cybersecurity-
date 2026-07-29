@@ -152,6 +152,22 @@ cy_public_ro cy_public_rw cy_restriction_ro cy_restriction_rw cy_private_rw
 ```
 
 ### 7.验收
+```
+               public
+                  │
+                  ▼
+        Group = cy_public_rw
+                  │
+        ┌─────────┴─────────┐
+        │                   │
+        ▼                   ▼
+       SGID            Default ACL
+        │                   │
+        ▼                   ▼
+     新文件属于        RO 自动继承
+    cy_public_rw       cy_public_ro
+```
+
 
 ---
 ## Linux用户文件权限系统组成
@@ -248,4 +264,39 @@ ACL = group:cy_public_ro, group:auditor, user:jack
 
 ### 第四层：Default ACL
 文件夹本体有了ACL，但是文件夹里面的子文件夹/文件怎么？就需要继承一个主文件的ACL
+
+---
+
+## 实用指令
+#### 查看已有哪些组
+```
+getent group
+```
+或者指定的组
+```
+getent group cy_public_rw
+```
+
+#### 新建组
+```bash
+sudo groupadd cy_public_rw
+```
+
+#### 新建用户
+
+#### 把用户加入组
+
+#### 调整用户所在组
+
+#### 查看文件SGID (Owner, Group, 是否存在ACL）
+```
+ls -l /SRV/storage/shares/XXX/XXXX
+```
+#### 查看文件/文件夹默认ACL
+```
+getfacl /srv/storage/shares/XXX/XXX
+```
+
+
+
 
