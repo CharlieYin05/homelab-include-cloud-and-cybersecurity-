@@ -272,9 +272,9 @@ ACL = group:cy_public_ro, group:auditor, user:jack
 ```
 getent group
 ```
-或者查看指定条件的组
+或者查看指定条件的组里有哪些人
 ```
-getent group cy_public_rw
+getent group 组名
 ```
 
 ### 新建组
