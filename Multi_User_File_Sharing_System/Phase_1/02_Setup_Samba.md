@@ -56,6 +56,10 @@ Disk (/srv/storage)
 ## 过程
 
 ### 安装
+```
+sudo apt update
+sudo apt install samba
+```
 
 ### 创建 Samba 用户
 创建一名 Samba 用户之前一定要先创建他的 Linux 用户并分好组。因为 Samba 用户 = Linux 用户 + Samba 密码。Samba 用户最终在要 Samba 数据库找到对应的 Linux 用户并映射上去。
