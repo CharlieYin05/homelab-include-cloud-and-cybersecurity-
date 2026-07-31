@@ -55,17 +55,85 @@ Disk (/srv/storage)
 
 ## 过程
 
-### 安装
+### 1.安装 Samba
+安装：
 ```
 sudo apt update
 sudo apt install samba
 ```
+查看默认监听端口：
+```
+sudo ss -tulpn | grep smbd
+```
+查看配置文件：
+```
+ls -l /etc/samba/
+```
+查看 Samba 数据库：
+```
+sudo pdbedit -L
+```
 
-### 创建 Samba 用户
+### 2.创建 Samba 用户
 创建一名 Samba 用户之前一定要先创建他的 Linux 用户并分好组。因为 Samba 用户 = Linux 用户 + Samba 密码。Samba 用户最终在要 Samba 数据库找到对应的 Linux 用户并映射上去。
 - Samba 账号负责认证（Authorization）
 - Linux 账号负责授权（Authentication）
 
+确认 Linux 用户的存在：
+```
+id 用户名
+```
+
+创建 Samba 用户并设置密码：
+```
+sudo smbpasswd -a 用户名
+```
+
+查看 Samba 用户（数据库）：
+```
+sudo pdbedit -L
+```
+
+### 3.共享文件
+Share（共享）是网络如入口，最终映射到 Linux 路径，而不是真的 Linux 路径。映射的路径要自己写。
+
+先备份 samba 配置文件：
+```
+sudo cp /etc/samba/smb.conf.bak /etc/samba/smb.conf
+```
+
+然后进入配置文件编辑：
+```
+sudo nano /etc/samba/smb.conf
+```
+
+末尾添加要映射的路径
+```
+[public]									← 客户端里显示的入口名字
+    path = /srv/storage/shares/public			                        ← 文件路径
+    browseable = yes							        ← 客户端关闭隐藏文件
+    read only = no								← Samba 不阻止用户写入 
+    valid users = @cy_public_rw @cy_public_ro	← 哪些 Samba 用户允许连接
+```
+
+检查语法：
+```
+testparm
+```
+
+重启 Samba 服务：
+```
+sudo systemctl restart smbd
+```
+
+再检查状态（是否activate)：
+```
+systemctl status smbd --no-pager
+```
+
+最后测试安卓 16，iPadOS 18，Windows 11，macOS 15 SMB访问
+
+### 问题1：iPad 识别成read only, 其他平台可以rwx
 
 ---
 ## 问题排查思路2.0
