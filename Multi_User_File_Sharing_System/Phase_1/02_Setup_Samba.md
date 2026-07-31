@@ -143,7 +143,32 @@ systemctl status smbd --no-pager
 - iPhone 13 (iOS 26.5.2)
 
 ### 4 Samba 加固
-#### 4.1 
+
+#### 4.1 关闭不必要的 Share
+
+查看目前有哪些 Share:
+```
+testparm -s
+```
+
+然后注释或删除 [homes] , [printers] , 以及 [print$]
+
+#### 4.2 修改 Guest 策略
+禁止不存在用户映射成 Guest
+```
+map to guest = Never
+```
+
+禁止普通用户创建自己的 Guest
+```
+usershare allow guests = No
+```
+
+#### 4.3 规定 SMB 最低协议
+添加最低为 SMB3:
+```
+server min protocol = SMB3
+```
 
 ---
 ## 问题排查思路2.0
