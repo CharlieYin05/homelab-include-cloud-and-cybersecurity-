@@ -109,11 +109,15 @@ sudo nano /etc/samba/smb.conf
 
 末尾添加要映射的路径
 ```
-[public]									← 客户端里显示的入口名字
-    path = /srv/storage/shares/public			                        ← 文件路径
-    browseable = yes							        ← 客户端关闭隐藏文件
-    read only = no								← Samba 不阻止用户写入 
-    valid users = @cy_public_rw @cy_public_ro	← 哪些 Samba 用户允许连接
+[public]			                        ← 客户端里显示的入口名字
+    path = /srv/storage/shares/public			← 文件路径
+    browseable = yes		                        ← 客户端关闭隐藏文件
+    read only = no				        ← Samba 不阻止用户写入 
+    valid users = @cy_public_rw @cy_public_ro           ← 哪些 Samba 用户允许连接
+
+    create mask = 0660                                  ← 用户新上传文件最大权限是 0660 （-rw-rw----)
+    directory mask = 2770                               ← 用户新创建的文件夹最大权限是 2770 （drwxrwx---)
+    inherit permissions = yes                           ← 用户新创建的文件夹尽可能继承父目录的权限特征
 ```
 
 检查语法：
