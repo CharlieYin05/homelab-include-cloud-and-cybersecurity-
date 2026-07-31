@@ -62,8 +62,6 @@ sshd开始认证
 22 端口先由 systemd 的 socket 接管，有连接时再启动 sshd。socket 相当于 进程的 “端口占位器 + 连接接收器”。
 
 ### 数据流
-
-物理上：
 ```
                 TCP Packet
                      │
@@ -92,19 +90,6 @@ sshd开始认证
    ▼           ▼
 交给应用      TCP RST
 (sshd/smbd)  (Connection Refused)
-```
-
-虚拟上：
-```
-Packet
-    │
-Linux Kernel
-    │
-nftables
-    │
-Socket
-    │
-Application
 ```
 
 ### 查看对外网络服务
