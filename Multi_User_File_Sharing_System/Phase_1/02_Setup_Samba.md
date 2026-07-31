@@ -97,12 +97,12 @@ sudo pdbedit -L
 ### 3.共享文件
 Share（共享）是网络如入口，最终映射到 Linux 路径，而不是真的 Linux 路径。映射的路径要自己写。
 
-先备份 samba 配置文件：
+#### 3.1 先备份 samba 配置文件：
 ```
 sudo cp /etc/samba/smb.conf.bak /etc/samba/smb.conf
 ```
 
-然后进入配置文件编辑：
+#### 3.2 然后进入配置文件编辑：
 ```
 sudo nano /etc/samba/smb.conf
 ```
@@ -125,7 +125,7 @@ sudo nano /etc/samba/smb.conf
 testparm
 ```
 
-重启 Samba 服务：
+#### 3.3 重启 Samba 服务：
 ```
 sudo systemctl restart smbd
 ```
@@ -135,9 +135,15 @@ sudo systemctl restart smbd
 systemctl status smbd --no-pager
 ```
 
-最后测试安卓 16，iPadOS 18，Windows 11，macOS 15 SMB访问
+#### 3.4 测试安卓，iOS，Windows，macOS 的 SMB 访问
 
-### 问题1：iPad 识别成read only, 其他平台可以rwx
+#### 遇到问题1：iOS File 识别成read only, 其他平台权限全部正常
+测试发现问题的设备：
+- iPad mini 6 (iPadOS 18.6.2)
+- iPhone 13 (iOS 26.5.2)
+
+### 4 Samba 加固
+#### 4.1 
 
 ---
 ## 问题排查思路2.0
