@@ -64,7 +64,7 @@ sudo cp /etc/samba/smb.conf /etc/samba/smb.conf.audit.bak
 ```
 
 #### 2.2 编辑配置文件
-在 global 底下加入：
+在 global , public, restriction, private 底下加入：
 ```
 vfs objects = full_audit                                           ← 开启审计日志
 
