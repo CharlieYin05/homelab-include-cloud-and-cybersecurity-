@@ -722,7 +722,9 @@ sudo nano /etc/logrotate.d/samba-audit
 ```
 
 ## 日志生命周期
-
+- Samba：产生日志（Producer）
+- rsyslog：收集并写入日志（Collector）
+- logrotate：管理日志生命周期（Rotation）
 
 
 ## VFS操作文档（扒源码版本）
