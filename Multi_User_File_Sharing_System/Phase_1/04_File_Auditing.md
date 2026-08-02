@@ -656,6 +656,34 @@ sudo grep -R "connect" /var/log
 
 WTF? 为什么 full_audit 没有走 rsyslog，而是被 Samba 的 logging backend 接管了?
 
+---
+
+2026-08-02 5:29pm
+
+SB了，之前为了做测试 `[private]` 一直是 full_audit:syslog = false。根据源代码：
+```
+if (pd->do_syslog) {
+    syslog(...);
+} else {
+    DEBUG(1, ("%s|%s|%s|%s\n", ...));
+}
+```
+如果 false 就会：
+```
+full_audit:syslog = false
+        │
+        ▼
+pd->do_syslog = false
+        │
+        ▼
+不会调用 syslog()
+        │
+        ▼
+调用 DEBUG(1,...)
+```
+所以没有经过 syslog() 日志存在 `/var/log/samba/log.cy-server-fss.old`.......
+
+重新改回 true 再测试发现审计终于正常了。
 
 ---
 
