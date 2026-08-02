@@ -363,11 +363,11 @@ static struct {
 	{ SMB_VFS_OP_FDOPENDIR,	"fdopendir" },
 	{ SMB_VFS_OP_READDIR,	"readdir" },
 	{ SMB_VFS_OP_REWINDDIR, "rewinddir" },
-	{ SMB_VFS_OP_MKDIRAT,	"mkdirat" },							      // ← 我要记录的创建目录
+	{ SMB_VFS_OP_MKDIRAT,	"mkdirat" },							       // ← 我要记录的创建目录
 	{ SMB_VFS_OP_CLOSEDIR,	"closedir" },
-	{ SMB_VFS_OP_OPEN,	"open" },									      // ← 我要记录的打开文件/文件夹
+	{ SMB_VFS_OP_OPEN,	"open" },									       // ← 我要记录的打开文件/文件夹
 	{ SMB_VFS_OP_OPENAT,	"openat" },
-	{ SMB_VFS_OP_CREATE_FILE, "create_file" },						   // ← 我要记录的创建文件
+	{ SMB_VFS_OP_CREATE_FILE, "create_file" },						       // ← 我要记录的创建文件
 	{ SMB_VFS_OP_CLOSE,	"close" },
 	{ SMB_VFS_OP_READ,	"read" },
 	{ SMB_VFS_OP_PREAD,	"pread" },
@@ -380,7 +380,7 @@ static struct {
 	{ SMB_VFS_OP_LSEEK,	"lseek" },
 	{ SMB_VFS_OP_SENDFILE,	"sendfile" },
 	{ SMB_VFS_OP_RECVFILE,  "recvfile" },
-	{ SMB_VFS_OP_RENAMEAT,	"renameat" },							      // ← 我要记录的重命名文件/文件夹
+	{ SMB_VFS_OP_RENAMEAT,	"renameat" },							        // ← 我要记录的重命名文件/文件夹
 	{ SMB_VFS_OP_RENAME_STREAM,	"rename_stream" },
 	{ SMB_VFS_OP_FSYNC_SEND,	"fsync_send" },
 	{ SMB_VFS_OP_FSYNC_RECV,	"fsync_recv" },
@@ -389,7 +389,7 @@ static struct {
 	{ SMB_VFS_OP_LSTAT,	"lstat" },
 	{ SMB_VFS_OP_FSTATAT,	"fstatat" },
 	{ SMB_VFS_OP_GET_ALLOC_SIZE,	"get_alloc_size" },
-	{ SMB_VFS_OP_UNLINKAT,	"unlinkat" },							      // ← 我要记录的删除文件/文件夹
+	{ SMB_VFS_OP_UNLINKAT,	"unlinkat" },							        // ← 我要记录的删除文件/文件夹
 	{ SMB_VFS_OP_FCHMOD,	"fchmod" },
 	{ SMB_VFS_OP_FCHOWN,	"fchown" },
 	{ SMB_VFS_OP_LCHOWN,	"lchown" },
