@@ -150,6 +150,49 @@ sudo systemctl status rsyslog
 sudo systemctl status smbd
 ```
 
+#### 问题1
+创建 rsyslog 规则后 SMB 访问失败。
+
+##### 排查
+本机服务器安装 Samba 客户端，如果 localhost 能连接就是客户端问题
+```
+sudo apt install smbclient
+```
+
+删除位于 `[global]` 的 VFS 插件，并且临时在 `[global]` 添加一条高等级日志用户排查问题：
+```
+log level = 3
+```
+
+然后 localhost SMB 访问：
+```
+smbclient -L localhost -U cyin026
+```
+
+尝试访问 public
+```
+smbclient //localhost/public -U cyin026
+```
+输出：
+```
+tree connect failed: NT_STATUS_UNSUCCESSFUL
+```
+
+| 测试                        | 结果                                      |
+| ------------------------- | --------------------------------------- |
+| 不启用 `full_audit`          | ✅ SMB 完全正常                              |
+| `full_audit` 放 `[global]` | ❌ Share 无法连接 (`NT_STATUS_UNSUCCESSFUL`) |
+| `full_audit` 只放 Share     | ✅ 能列出 Share，但无法进入 Share                 |
+
+问题基本锁定在 full_audit 配置本身，而不是 Samba、权限、ACL 或 rsyslog。
+
+审计成功记录里删除 `[public]` 的 open 和 create_file：
+```
+full_audit:success = mkdir rmdir rename unlink
+```
+
+
+
 
 
 
