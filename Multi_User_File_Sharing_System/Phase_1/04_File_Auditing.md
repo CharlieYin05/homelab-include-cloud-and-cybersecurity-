@@ -463,7 +463,9 @@ static struct {
 打开文件后没有产生任何 full_audit 的日志。
 
 --- 
+
 2026-08-02 2:07pm
+
 怀疑：
 1. do_log() 根本没有被执行。
 2. do_log() 执行了，但 log_success() 把它过滤掉了。
