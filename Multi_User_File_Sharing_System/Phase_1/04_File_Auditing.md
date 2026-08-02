@@ -191,7 +191,10 @@ tree connect failed: NT_STATUS_UNSUCCESSFUL
 full_audit:success = mkdir rmdir rename unlink
 ```
 
+---
+
 2026/08/02 11:58am
+
 只删除 open 和 create file 依然失败。怀疑是 sucess 的操作参数是老版本（不知道是 Debian 还是 Samba）。先把 Private 套用官方 full audit 模版。
 ```
     vfs objects = full_audit
@@ -206,6 +209,7 @@ full_audit:success = mkdir rmdir rename unlink
 ---
 
 2026/08/02 12:06pm
+
 哪怕套用官方模版依然出错。剩下三大可能性：
 1. Samba 4.22 + Debian 13 的 full_audit 回归 Bug
 2. Debian 的 Samba 打包问题
@@ -214,6 +218,7 @@ full_audit:success = mkdir rmdir rename unlink
 ---
 
 2026/08/02 12:14pm
+
 把 Samba 日志等级提高到 11 级， 然后连接后立刻抓取记录。
 客户端：
 ```
@@ -230,6 +235,7 @@ sudo grep -R "Invalid success" /var/log/samba
 ---
 
 2026/08/02 12:27pm
+
 日志中发现的异常
 原来是：
 ```
@@ -249,10 +255,11 @@ smb_full_audit_connect: Invalid success operations list. Failing connect
 ---
 
 2026/08/02 12:38pm
-TM的这个 `Samba` 安装时自带的官方文档有误 `vfs_full_audit.8.gz`。里面的 API 没有更新，而网上大量教程用的也是旧的 API ，这些旧 API 名字全部失效。
-最离谱的是查到官方写的 example: full_audit:success = open opendir 连开发者自己都承认这个 Example 是错的！
+
+TM的这个 `Samba` 安装时自带的官方文档有误 `vfs_full_audit.8.gz`。没有更新，而网上大量教程用的也是旧的 API 名称，这些旧的全部失效。最离谱的是查到官方写的 example: full_audit:success = open opendir 连开发者自己都承认这个 Example 是错的！
 
 先给 private 审计写一个最小配置，然后再一个一个添加并测试合法的 operation。
+
 最小配置：
 ```
     vfs objects = full_audit
@@ -269,6 +276,7 @@ Private 测试通过。接下来就是直接看 Samba 源代码里的 full_audit
 ---
 
 2026/08/02 12:50pm
+
 1.找到官方仓库，然后找这个文件：`source3/modules/vfs_full_audit.c`
 
 2.根据日志报错，搜索 init_bitmap() 的函数的输入和输出：
@@ -339,9 +347,9 @@ static struct bitmap *init_bitmap(TALLOC_CTX *mem_ctx, const char **ops)
 
 输出：`return bm` 表示成功。`NULL` 表示失败。
 
-报错的地方：for 循环判断 operation 在不在 `vfs_op_names[]` 里。
+3. 报错的地方：for 循环判断 operation 在不在 `vfs_op_names[]` 里。
 
-找 `vfs_op_names[]` 里有的 operation 到底是啥：
+4. 找 `vfs_op_names[]` 里有的 operation 到底是啥：
 ```
 static struct {
 	vfs_op_type type;
