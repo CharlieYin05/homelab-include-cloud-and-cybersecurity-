@@ -117,8 +117,11 @@ systemctl status rsyslog
 sudo nano /etc/rsyslog.d/30-samba-audit.conf
 ```
 
-里面只写一行：
+写入：
 ```
+if ($programname == "smbd_audit" and $msg contains ".DS_Store") then stop
+if ($programname == "smbd_audit" and $msg contains "/._") then stop
+
 local7.notice    /srv/logs/samba/audit.log
 ```
 
@@ -683,11 +686,46 @@ pd->do_syslog = false
 ```
 所以没有经过 syslog() 日志存在 `/var/log/samba/log.cy-server-fss.old`.......
 
-重新改回 true 再测试发现审计终于正常了。
+重新改回 true 再测试发现 audit.log 终于运行了。
 
 ---
 
-### VFS操作文档（扒源码版本）
+## 4.设置日志轮转
+
+### 目标：使用 `logrotate` 保留六个月的记录
+
+#### 4.1 针对 /srv/logs/samba/audit.log 新增一个规则
+编辑 logrotate 配置文件：
+```
+sudo nano /etc/logrotate.d/samba-audit
+```
+
+照着 Debian 自带的格式写
+```
+/srv/logs/samba/audit.log
+{
+    rotate 12									← 保留 12
+    monthly										← 个月
+
+    missingok									← 日志不存在也不报错
+    notifempty									← 如果日志格式为空则不论转
+
+    compress									← 历史日志全部压缩
+    delaycompress								← 最新的一份历史日志先别压缩，下次再压
+
+    sharedscripts								← 共享 postrotate 次数
+
+    postrotate									← 日志轮转完成后，再执行下面这些命令。
+        /usr/lib/rsyslog/rsyslog-rotate			← 用于秩序吸入 audit.log ，而不是指向旧的 audit.log.1 
+    endscript
+}
+```
+
+## 日志生命周期
+
+
+
+## VFS操作文档（扒源码版本）
 
 | VFS Operation   | 含义                          | 用户实际操作                                   |
 | --------------- | --------------------------- | ---------------------------------------- |
@@ -700,7 +738,7 @@ pd->do_syslog = false
 | **unlinkat**    | 删除目录项                       | 删除文件（以及部分删除目录操作）                         |
 
 
-### 开源项目排障方法：
+## 开源项目排障方法：
 1. 日志定位函数
 2. 阅读函数，而不是通读整个项目（找调用链）
 3. 验证假设
@@ -709,7 +747,7 @@ pd->do_syslog = false
 
 ---
 
-### 一般的大型 C 语言开源项目结构如下：
+## 一般的大型 C 语言开源项目结构如下：
 ```
 配置文件
      │
@@ -729,6 +767,78 @@ Function Pointer Table（Hook）
 日志
 ```
 
+---
+
+## Samba 配置文件操作手册
+
+### 只查看配置文件：
+```
+cat /etc/samba/smb.conf
+```
+
+### 修改配置文件：
+```
+sudo nano /etc/samba/smb.conf
+```
+
+### 修改后检查重启
+```
+sudo testparm
+sudo systemctl restart smbd
+```
+
+---
+
+## Samba `audit.log` 操作手册
+
+### 查看全部记录
+```
+sudo cat /srv/logs/samba/audit.log
+```
+
+### 查看最近20行
+```
+sudo tail -20 /srv/logs/samba/audit.log
+```
+
+### 查询某个用户
+```
+sudo grep "用户名" /srv/logs/samba/audit.log
+```
+
+### 查询某个IP
+```
+sudo grep "IP地址" /srv/logs/samba/audit.log
+```
+
+### 查询失败操作
+```
+sudo grep "fail" /srv/logs/samba/audit.log
+```
+
+### 只查看删除操作
+```
+sudo grep "unlinkat" /srv/logs/samba/audit.log
+```
+
+### 实时监控
+```
+sudo tail -f /srv/logs/samba/audit.log
+```
+
+---
+
+## Samba `rsyslog.d` 操作手册
+通常用于添加过滤条件
+
+编辑：
+```
+sudo nano /etc/rsyslog.d/30-samba-audit.conf
+```
+重启：
+```
+sudo systemctl restart rsyslog
+```
 
 
 
