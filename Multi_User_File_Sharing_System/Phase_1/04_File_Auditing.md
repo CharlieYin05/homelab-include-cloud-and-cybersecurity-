@@ -122,7 +122,7 @@ sudo nano /etc/rsyslog.d/30-samba-audit.conf
 if ($programname == "smbd_audit" and $msg contains ".DS_Store") then stop
 if ($programname == "smbd_audit" and $msg contains "/._") then stop
 
-local7.notice    /srv/logs/samba/audit.log
+local7.notice    /srv/logs/samba/audit.log			← 路由规则
 ```
 
 执行：
@@ -253,15 +253,15 @@ smb_full_audit_connect: Invalid success operations list. Failing connect
 日志直接说明了 full_audit 在初始化时解析 full_audit:success 列表失败，因此拒绝整个 Share 的连接。
 
 说明：
-- 不是 full_audit 模块坏了，而是写进去的 operation 名称，在你这版 Samba 4.22.10 根本不存在？！
+- 不是 full_audit 模块坏了，而是写进去的 operation 名称，在这版 Samba 4.22.10 根本不存在？！
 
 ---
 
 2026/08/02 12:38pm
 
-TM的这个 `Samba` 安装时自带的官方文档有误 `vfs_full_audit.8.gz`。没有更新，而网上大量教程用的也是旧的 API 名称，这些旧的全部失效。最离谱的是查到官方写的 example: full_audit:success = open opendir 连开发者自己都承认这个 Example 是错的！
+TM的这个 `Samba` 安装时自带的官方文档有误 `vfs_full_audit.8.gz` 没有更新，而网上大量教程用的也是旧的 API 名称，这些旧的全部失效。最离谱的是查到官方写的 example: full_audit:success = open opendir 连开发者自己都承认这个 Example 是错的！
 
-先给 private 审计写一个最小配置，然后再一个一个添加并测试合法的 operation。
+先给 `[private]` VFS 写一个最小配置，然后再一个一个添加并测试合法的 operation。
 
 最小配置：
 ```
@@ -546,9 +546,10 @@ syslog=true         syslog=false
      │                   │
  rsyslog          /var/log/samba/log.*
 ```
-因此可以故意触发 `syslog=false` 来把问题进一步缩小
+因此可以故意触发 `syslog=false` 来把问题进一步缩小。
 
-把 `[private]` 部分的 syslog ，从 true 改成false, 同时加入 sucess 改成 connect openat create_file。然后再观察
+把 `[private]` 部分的 syslog ，从 true 改成false, 同时加入 sucess 改成 connect openat create_file，然后再观察。
+
 服务端：
 ```
 sudo tail -f /var/log/samba/log.smbd
@@ -842,9 +843,33 @@ sudo nano /etc/rsyslog.d/30-samba-audit.conf
 sudo systemctl restart rsyslog
 ```
 
+---
 
+## logrotate 配置文件操作手册
+查看已有的 logrotate 规则
+```
+ls /etc/logrotate.d/
+```
 
+查看已生成的 logrotate samba.log 有些哪：
+```
+ls -lh /srv/logs/samba
+```
 
+查看 rsyslog：
+```
+cat /etc/logrotate.d/rsyslog
+```
+
+编辑具体 Samba log：
+```
+sudo nano /etc/logrotate.d/samba-audit
+```
+
+查看已经生成的 audit.log ：
+```
+sudo cat /etc/logrotate.d/samba-audit
+```
 
 
 
