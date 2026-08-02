@@ -332,7 +332,7 @@ static struct bitmap *init_bitmap(TALLOC_CTX *mem_ctx, const char **ops)
 		}
 	}
 	return bm;
-   ////我遇到的出错并且被打印出来↑
+   //我遇到的出错并且被打印出来↑
 }
 ```
 输入：`TALLOC_CTX *mem_ctx`, `const char **ops`
@@ -456,7 +456,6 @@ static struct {
 	{ SMB_VFS_OP_LAST, NULL }
 };
 ```
-
 
 
 
