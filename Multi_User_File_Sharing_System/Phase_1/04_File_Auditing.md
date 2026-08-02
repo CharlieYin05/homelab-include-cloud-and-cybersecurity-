@@ -224,10 +224,22 @@ sudo grep -R "init_bitmap" /var/log/samba
 sudo grep -R "Invalid success" /var/log/samba
 ```
 
+2026/08/02 12:27pm
+日志中发现的异常
+原来是：
+```
+init_bitmap: Could not find opname mkdir
+```
+现在改成官方 example 后：
+```
+full_audit:success = open opendir
 
+smb_full_audit_connect: Invalid success operations list. Failing connect
+```
+日志直接说明了 full_audit 在初始化时解析 full_audit:success 列表失败，因此拒绝整个 Share 的连接。
 
-
-
+说明：
+- 不是 full_audit 模块坏了，而是写进去的 operation 名称，在你这版 Samba 4.22.10 根本不存在？！
 
 
 
