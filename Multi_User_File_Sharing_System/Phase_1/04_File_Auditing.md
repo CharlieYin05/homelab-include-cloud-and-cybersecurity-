@@ -203,12 +203,15 @@ full_audit:success = mkdir rmdir rename unlink
     full_audit:facility = LOCAL7
     full_audit:priority = NOTICE
 ```
+---
 
 2026/08/02 12:06pm
 哪怕套用官方模版依然出错。剩下三大可能性：
 1. Samba 4.22 + Debian 13 的 full_audit 回归 Bug
 2. Debian 的 Samba 打包问题
 3. 还有一个没验证的点：full_audit 是否依赖某些默认 VFS 模块（例如 acl_xattr）
+
+---
 
 2026/08/02 12:14pm
 把 Samba 日志等级提高到 11 级， 然后连接后立刻抓取记录。
@@ -223,6 +226,8 @@ sudo grep -R "init_bitmap" /var/log/samba
 ```
 sudo grep -R "Invalid success" /var/log/samba
 ```
+
+---
 
 2026/08/02 12:27pm
 日志中发现的异常
@@ -240,6 +245,223 @@ smb_full_audit_connect: Invalid success operations list. Failing connect
 
 说明：
 - 不是 full_audit 模块坏了，而是写进去的 operation 名称，在你这版 Samba 4.22.10 根本不存在？！
+
+---
+
+2026/08/02 12:38pm
+TM的这个 `Samba` 安装时自带的官方文档有误 `vfs_full_audit.8.gz`。里面的 API 没有更新，而网上大量教程用的也是旧的 API ，这些旧 API 名字全部失效。
+最离谱的是查到官方写的 example: full_audit:success = open opendir 连开发者自己都承认这个 Example 是错的！
+
+先给 private 审计写一个最小配置，然后再一个一个添加并测试合法的 operation。
+最小配置：
+```
+    vfs objects = full_audit
+
+    full_audit:prefix = %u|%I
+    full_audit:success = none
+    full_audit:failure = none
+
+    full_audit:facility = LOCAL7
+    full_audit:priority = NOTICE
+```
+Private 测试通过。接下来就是直接看 Samba 源代码里的 full_audit operation。
+
+---
+
+2026/08/02 12:50pm
+1.找到官方仓库，然后找这个文件：`source3/modules/vfs_full_audit.c`
+
+2.根据日志报错，搜索 init_bitmap() 的函数的输入和输出：
+```
+static struct bitmap *init_bitmap(TALLOC_CTX *mem_ctx, const char **ops)
+{
+	struct bitmap *bm;
+
+	if (ops == NULL) {
+		DBG_ERR("init_bitmap, ops list is empty (logic error)\n");
+		return NULL;
+	}
+
+	bm = bitmap_talloc(mem_ctx, SMB_VFS_OP_LAST);
+	if (bm == NULL) {
+		DBG_ERR("Could not alloc bitmap\n");
+		return NULL;
+	}
+   //我遇到的出错并且被打印出来↓
+	for (; *ops != NULL; ops += 1) {
+		int i;
+		bool neg = false;
+		const char *op;
+
+		if (strequal(*ops, "all")) {
+			for (i=0; i<SMB_VFS_OP_LAST; i++) {
+				bitmap_set(bm, i);
+			}
+			continue;
+		}
+
+		if (strequal(*ops, "none")) {
+			break;
+		}
+
+		op = ops[0];
+		if (op[0] == '!') {
+			neg = true;
+			op += 1;
+		}
+
+		for (i=0; i<SMB_VFS_OP_LAST; i++) {
+			if ((vfs_op_names[i].name == NULL)
+			 || (vfs_op_names[i].type != i)) {
+				smb_panic("vfs_full_audit.c: name table not "
+					  "in sync with vfs_op_type enums\n");
+			}
+			if (strequal(op, vfs_op_names[i].name)) {
+				if (neg) {
+					bitmap_clear(bm, i);
+				} else {
+					bitmap_set(bm, i);
+				}
+				break;
+			}
+		}
+		if (i == SMB_VFS_OP_LAST) {
+			DBG_ERR("Could not find opname %s\n", *ops);
+			TALLOC_FREE(bm);
+			return NULL;
+		}
+	}
+	return bm;
+   ////我遇到的出错并且被打印出来↑
+}
+```
+输入：`TALLOC_CTX *mem_ctx`, `const char **ops`
+
+输出：`return bm` 表示成功。`NULL` 表示失败。
+
+报错的地方：for 循环判断 operation 在不在 `vfs_op_names[]` 里。
+
+找 `vfs_op_names[]` 里有的 operation 到底是啥：
+```
+static struct {
+	vfs_op_type type;
+	const char *name;
+} vfs_op_names[] = {
+	{ SMB_VFS_OP_CONNECT,	"connect" },
+	{ SMB_VFS_OP_DISCONNECT,	"disconnect" },
+	{ SMB_VFS_OP_OPEN_SHARE_ROOT,	"open_share_root" },
+	{ SMB_VFS_OP_DISK_FREE,	"disk_free" },
+	{ SMB_VFS_OP_GET_QUOTA,	"get_quota" },
+	{ SMB_VFS_OP_SET_QUOTA,	"set_quota" },
+	{ SMB_VFS_OP_GET_SHADOW_COPY_DATA,	"get_shadow_copy_data" },
+	{ SMB_VFS_OP_STATVFS,	"statvfs" },
+	{ SMB_VFS_OP_FSTATVFS,	"fstatvfs" },
+	{ SMB_VFS_OP_FS_CAPABILITIES,	"fs_capabilities" },
+	{ SMB_VFS_OP_GET_DFS_REFERRALS,	"get_dfs_referrals" },
+	{ SMB_VFS_OP_CREATE_DFS_PATHAT,	"create_dfs_pathat" },
+	{ SMB_VFS_OP_READ_DFS_PATHAT,	"read_dfs_pathat" },
+	{ SMB_VFS_OP_FDOPENDIR,	"fdopendir" },
+	{ SMB_VFS_OP_READDIR,	"readdir" },
+	{ SMB_VFS_OP_REWINDDIR, "rewinddir" },
+	{ SMB_VFS_OP_MKDIRAT,	"mkdirat" },							      // ← 我要记录的创建目录
+	{ SMB_VFS_OP_CLOSEDIR,	"closedir" },
+	{ SMB_VFS_OP_OPEN,	"open" },									      // ← 我要记录的打开文件/文件夹
+	{ SMB_VFS_OP_OPENAT,	"openat" },
+	{ SMB_VFS_OP_CREATE_FILE, "create_file" },						   // ← 我要记录的创建文件
+	{ SMB_VFS_OP_CLOSE,	"close" },
+	{ SMB_VFS_OP_READ,	"read" },
+	{ SMB_VFS_OP_PREAD,	"pread" },
+	{ SMB_VFS_OP_PREAD_SEND,	"pread_send" },
+	{ SMB_VFS_OP_PREAD_RECV,	"pread_recv" },
+	{ SMB_VFS_OP_WRITE,	"write" },
+	{ SMB_VFS_OP_PWRITE,	"pwrite" },
+	{ SMB_VFS_OP_PWRITE_SEND,	"pwrite_send" },
+	{ SMB_VFS_OP_PWRITE_RECV,	"pwrite_recv" },
+	{ SMB_VFS_OP_LSEEK,	"lseek" },
+	{ SMB_VFS_OP_SENDFILE,	"sendfile" },
+	{ SMB_VFS_OP_RECVFILE,  "recvfile" },
+	{ SMB_VFS_OP_RENAMEAT,	"renameat" },							      // ← 我要记录的重命名文件/文件夹
+	{ SMB_VFS_OP_RENAME_STREAM,	"rename_stream" },
+	{ SMB_VFS_OP_FSYNC_SEND,	"fsync_send" },
+	{ SMB_VFS_OP_FSYNC_RECV,	"fsync_recv" },
+	{ SMB_VFS_OP_STAT,	"stat" },
+	{ SMB_VFS_OP_FSTAT,	"fstat" },
+	{ SMB_VFS_OP_LSTAT,	"lstat" },
+	{ SMB_VFS_OP_FSTATAT,	"fstatat" },
+	{ SMB_VFS_OP_GET_ALLOC_SIZE,	"get_alloc_size" },
+	{ SMB_VFS_OP_UNLINKAT,	"unlinkat" },							      // ← 我要记录的删除文件/文件夹
+	{ SMB_VFS_OP_FCHMOD,	"fchmod" },
+	{ SMB_VFS_OP_FCHOWN,	"fchown" },
+	{ SMB_VFS_OP_LCHOWN,	"lchown" },
+	{ SMB_VFS_OP_CHDIR,	"chdir" },
+	{ SMB_VFS_OP_NTIMES,	"ntimes" },
+	{ SMB_VFS_OP_FNTIMES,	"fntimes" },
+	{ SMB_VFS_OP_FTRUNCATE,	"ftruncate" },
+	{ SMB_VFS_OP_FALLOCATE,"fallocate" },
+	{ SMB_VFS_OP_LOCK,	"lock" },
+	{ SMB_VFS_OP_FILESYSTEM_SHAREMODE,	"filesystem_sharemode" },
+	{ SMB_VFS_OP_FCNTL,	"fcntl" },
+	{ SMB_VFS_OP_LINUX_SETLEASE, "linux_setlease" },
+	{ SMB_VFS_OP_GETLOCK,	"getlock" },
+	{ SMB_VFS_OP_SYMLINKAT,	"symlinkat" },
+	{ SMB_VFS_OP_READLINKAT,"readlinkat" },
+	{ SMB_VFS_OP_LINKAT,	"linkat" },
+	{ SMB_VFS_OP_MKNODAT,	"mknodat" },
+	{ SMB_VFS_OP_REALPATH,	"realpath" },
+	{ SMB_VFS_OP_FCHFLAGS,	"fchflags" },
+	{ SMB_VFS_OP_FILE_ID_CREATE,	"file_id_create" },
+	{ SMB_VFS_OP_FS_FILE_ID,	"fs_file_id" },
+	{ SMB_VFS_OP_FSTREAMINFO,	"fstreaminfo" },
+	{ SMB_VFS_OP_GET_REAL_FILENAME, "get_real_filename" },
+	{ SMB_VFS_OP_GET_REAL_FILENAME_AT, "get_real_filename_at" },
+	{ SMB_VFS_OP_BRL_LOCK_WINDOWS,  "brl_lock_windows" },
+	{ SMB_VFS_OP_BRL_UNLOCK_WINDOWS, "brl_unlock_windows" },
+	{ SMB_VFS_OP_STRICT_LOCK_CHECK, "strict_lock_check" },
+	{ SMB_VFS_OP_TRANSLATE_NAME,	"translate_name" },
+	{ SMB_VFS_OP_PARENT_PATHNAME,	"parent_pathname" },
+	{ SMB_VFS_OP_FSCTL,		"fsctl" },
+	{ SMB_VFS_OP_OFFLOAD_READ_SEND,	"offload_read_send" },
+	{ SMB_VFS_OP_OFFLOAD_READ_RECV,	"offload_read_recv" },
+	{ SMB_VFS_OP_OFFLOAD_WRITE_SEND,	"offload_write_send" },
+	{ SMB_VFS_OP_OFFLOAD_WRITE_RECV,	"offload_write_recv" },
+	{ SMB_VFS_OP_FGET_COMPRESSION,	"fget_compression" },
+	{ SMB_VFS_OP_SET_COMPRESSION,	"set_compression" },
+	{ SMB_VFS_OP_SNAP_CHECK_PATH, "snap_check_path" },
+	{ SMB_VFS_OP_SNAP_CREATE, "snap_create" },
+	{ SMB_VFS_OP_SNAP_DELETE, "snap_delete" },
+	{ SMB_VFS_OP_GET_DOS_ATTRIBUTES_SEND, "get_dos_attributes_send" },
+	{ SMB_VFS_OP_GET_DOS_ATTRIBUTES_RECV, "get_dos_attributes_recv" },
+	{ SMB_VFS_OP_FGET_DOS_ATTRIBUTES, "fget_dos_attributes" },
+	{ SMB_VFS_OP_FSET_DOS_ATTRIBUTES, "fset_dos_attributes" },
+	{ SMB_VFS_OP_FGET_NT_ACL,	"fget_nt_acl" },
+	{ SMB_VFS_OP_FSET_NT_ACL,	"fset_nt_acl" },
+	{ SMB_VFS_OP_SYS_ACL_GET_FD,	"sys_acl_get_fd" },
+	{ SMB_VFS_OP_SYS_ACL_BLOB_GET_FD,	"sys_acl_blob_get_fd" },
+	{ SMB_VFS_OP_SYS_ACL_SET_FD,	"sys_acl_set_fd" },
+	{ SMB_VFS_OP_SYS_ACL_DELETE_DEF_FD,	"sys_acl_delete_def_fd" },
+	{ SMB_VFS_OP_GETXATTRAT_SEND, "getxattrat_send" },
+	{ SMB_VFS_OP_GETXATTRAT_RECV, "getxattrat_recv" },
+	{ SMB_VFS_OP_FGETXATTR,	"fgetxattr" },
+	{ SMB_VFS_OP_FLISTXATTR,	"flistxattr" },
+	{ SMB_VFS_OP_REMOVEXATTR,	"removexattr" },
+	{ SMB_VFS_OP_FREMOVEXATTR,	"fremovexattr" },
+	{ SMB_VFS_OP_FSETXATTR,	"fsetxattr" },
+	{ SMB_VFS_OP_AIO_FORCE, "aio_force" },
+	{ SMB_VFS_OP_IS_OFFLINE, "is_offline" },
+	{ SMB_VFS_OP_SET_OFFLINE, "set_offline" },
+	{ SMB_VFS_OP_DURABLE_COOKIE, "durable_cookie" },
+	{ SMB_VFS_OP_DURABLE_DISCONNECT, "durable_disconnect" },
+	{ SMB_VFS_OP_DURABLE_RECONNECT, "durable_reconnect" },
+	{ SMB_VFS_OP_FREADDIR_ATTR,      "freaddir_attr" },
+	{ SMB_VFS_OP_LAST, NULL }
+};
+```
+
+
+
+
+
+
 
 
 
