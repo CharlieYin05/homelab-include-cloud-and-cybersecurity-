@@ -191,6 +191,37 @@ tree connect failed: NT_STATUS_UNSUCCESSFUL
 full_audit:success = mkdir rmdir rename unlink
 ```
 
+2026/08/02 11:58am
+只删除 open 和 create file 依然失败。怀疑是 sucess 的操作参数是老版本（不知道是 Debian 还是 Samba）。先把 Private 套用官方 full audit 模版。
+```
+    vfs objects = full_audit
+
+    full_audit:prefix = %u|%I
+    full_audit:success = open opendir
+    full_audit:failure = all !open
+
+    full_audit:facility = LOCAL7
+    full_audit:priority = NOTICE
+```
+
+2026/08/02 12:06pm
+哪怕套用官方模版依然出错。剩下三大可能性：
+1. Samba 4.22 + Debian 13 的 full_audit 回归 Bug
+2. Debian 的 Samba 打包问题
+3. 还有一个没验证的点：full_audit 是否依赖某些默认 VFS 模块（例如 acl_xattr）
+
+2026/08/02 12:14pm
+把 Samba 日志等级提高到 11 级， 然后连接后立刻抓取记录。
+```
+smbclient //localhost/private -U cyin026 -d 11
+```
+```
+grep -R "init_bitmap" /var/log/samba
+```
+```
+grep -R "Invalid success" /var/log/samba
+```
+
 
 
 
