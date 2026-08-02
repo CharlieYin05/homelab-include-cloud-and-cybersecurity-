@@ -150,7 +150,7 @@ sudo systemctl status rsyslog
 sudo systemctl status smbd
 ```
 
-#### 问题1
+#### 遇到的问题1
 创建 rsyslog 规则后 SMB 访问失败。
 
 ##### 排查
@@ -456,6 +456,20 @@ static struct {
 	{ SMB_VFS_OP_LAST, NULL }
 };
 ```
+
+#### 遇到的问题2
+
+##### 症状
+打开文件后没有产生任何 full_audit 的日志。
+
+--- 
+2026-08-02 2:07pm
+怀疑：
+1. do_log() 根本没有被执行。
+2. do_log() 执行了，但 log_success() 把它过滤掉了。
+
+还要接着看源代码定位。。。好累，好饿，先吃饭去。
+
 
 
 
