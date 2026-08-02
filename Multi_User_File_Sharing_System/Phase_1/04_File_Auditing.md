@@ -692,7 +692,7 @@ pd->do_syslog = false
 
 ## 4.设置日志轮转
 
-### 目标：使用 `logrotate` 保留六个月的记录
+### 目标：使用 `logrotate` 保留12个月的记录
 
 #### 4.1 针对 /srv/logs/samba/audit.log 新增一个规则
 编辑 logrotate 配置文件：
