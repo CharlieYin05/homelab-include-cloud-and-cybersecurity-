@@ -212,14 +212,16 @@ full_audit:success = mkdir rmdir rename unlink
 
 2026/08/02 12:14pm
 把 Samba 日志等级提高到 11 级， 然后连接后立刻抓取记录。
+客户端：
 ```
 smbclient //localhost/private -U cyin026 -d 11
 ```
+服务端：
 ```
-grep -R "init_bitmap" /var/log/samba
+sudo grep -R "init_bitmap" /var/log/samba
 ```
 ```
-grep -R "Invalid success" /var/log/samba
+sudo grep -R "Invalid success" /var/log/samba
 ```
 
 
