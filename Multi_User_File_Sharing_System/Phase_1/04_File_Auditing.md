@@ -498,8 +498,167 @@ static struct {
 
 还要接着看源代码定位。。。好累，好饿，先吃饭去。
 
-
 --- 
+
+2026-08-02 3:36pm
+
+目前证据链如下：
+```
+full_audit.so          ✅ 存在
+        │
+        ▼
+vfs objects            ✅ 已加载
+        │
+        ▼
+init_bitmap()          ✅ 正常
+        │
+        ▼
+operation 名称         ✅ 已验证 (mkdir→mkdirat)
+        │
+        ▼
+do_log()               ❓
+        │
+        ▼
+syslog()               （理论上会调用）
+        │
+        ▼
+LOCAL7                 ✅ 正常
+        │
+        ▼
+rsyslog                ✅ 正常
+        │
+        ▼
+audit.log              ✅ 正常
+```
+
+根据源代码已知：
+```
+            do_log()
+               │
+     ┌─────────┴─────────┐
+     │                   │
+syslog=true         syslog=false
+     │                   │
+ syslog()            DEBUG(1)
+     │                   │
+ rsyslog          /var/log/samba/log.*
+```
+因此可以故意触发 `syslog=false` 来把问题进一步缩小
+
+把 `[private]` 部分的 syslog ，从 true 改成false, 同时加入 sucess 改成 connect openat create_file。然后再观察
+服务端：
+```
+sudo tail -f /var/log/samba/log.smbd
+```
+
+客户端：
+进入 private，ls，然后quit
+
+根据输出的日志只输出了普通 Samba Debug。说明 不是 syslog() 的问题。根据源代码:
+```
+if (pd->do_syslog) {
+    syslog(...);
+} else {
+    DEBUG(1, (...));
+}
+```
+直接触发了 else 而不是 syslog()，也就是说那么多的 do_log() 函数根本没有被调用！！！（我要昏厥了）
+
+---
+
+2026-08-02 4:06pm
+
+也许 do_log() 没有被执行，直接找 Samba Debian 的源码：
+```
+sudo apt update
+
+sudo apt install dpkg-dev
+
+apt source samba
+```
+
+然后查看看 Debian 版本的 `vfs_full_audit.c`
+
+
+缩小目标：为什么就单单连接这个行为 smb_full_audit_connect() 没有产生 do_log() 的输出？为什么这个函数没有被 Samba 注册成 VFS Hook?
+
+根据static struct vfs_fn_pointers vfs_full_audit_fns的结构体内容 `.connect_fn = smb_full_audit_connect,` 能确定 VFS Hook 注册是正常的。
+
+调用链：
+```
+smb.conf
+    │
+    ▼
+vfs objects = full_audit
+    │
+    ▼
+vfs_full_audit_init()
+    │
+    ▼
+smb_register_vfs(...)
+    │
+    ▼
+vfs_full_audit_fns
+    │
+    ├── connect_fn  -> smb_full_audit_connect
+    ├── openat_fn   -> smb_full_audit_openat
+    ├── create_file_fn -> smb_full_audit_create_file
+    └── ...
+```
+
+---
+
+2026-08-02 4:49pm
+
+问题再缩小：为什么 Hook 被注册了，却没有产生任何 audit log？
+
+首先是 Debian 4.22 的 vfs_full_audit.c 和 Samba github 官方仓库的源代码不一样。官方仓库的函数是 do_log(op, NULL, ...)，Debian 4.22 源码函数是 do_log(op, true, ...)。。。。。。但是不重要
+
+---
+2026-08-02 5:16pm
+
+好烦，会不会是一开始路线就错了，例如不应该一直盯着audit.log作为唯一的日志输出对象来观察。直接暴力搜索所有带有“ok”和“connect”的log
+
+输入：
+```
+sudo grep -R "ok|" /var/log
+sudo grep -R "connect" /var/log
+```
+
+输出发现：
+1. vfs_full_audit 工作正常，例如这一段：
+   ```
+   /var/log/samba/log.cy-server-fss.old:
+   cyin026|::1|connect|ok|private
+
+   cyin026|::1|openat|ok|r|/srv/storage/shares/private
+
+   cyin026|::1|create_file|ok|0x81|dir|open|/srv/storage/shares/private
+   ```
+   这完全就是full_audit 的输出格式。
+
+   而 dolog() 函数
+   ```
+   syslog(priority,
+       "%s|%s|%s|%s\n",
+       audit_pre,
+       audit_opname(op),
+       err_msg,
+       op_msg);
+   ```
+   对应的输出也完全匹配：
+   ```
+   cyin026|::1|connect|ok|private
+   ```
+
+2. 一直找错日志了
+   日志没有没有进入 `/srv/logs/samba/audit.log`，而是进入了 `/var/log/samba/log.cy-server-fss.old`
+
+WTF? 为什么 full_audit 没有走 rsyslog，而是被 Samba 的 logging backend 接管了?
+
+
+---
+
 
 ### 开源项目排障方法：
 1. 日志定位函数
@@ -507,6 +666,29 @@ static struct {
 3. 验证假设
 4. 排除一个又一个可能性
 5. 让证据决定下一步，而不是凭感觉改配置
+
+---
+
+### 一般的大型 C 语言开源项目结构如下：
+```
+配置文件
+     │
+     ▼
+Parser（lp_parm_*）
+     │
+     ▼
+Module Init（注册）
+     │
+     ▼
+Function Pointer Table（Hook）
+     │
+     ▼
+真正的函数（smb_full_audit_openat）
+     │
+     ▼
+日志
+```
+
 
 
 
