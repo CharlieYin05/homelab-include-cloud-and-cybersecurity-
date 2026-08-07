@@ -124,3 +124,15 @@ tcp LISTEN 0 50 0.0.0.0:22 users:(("sshd"))
 | **Process**            | `users:(("sshd"))` | 拥有这个 Socket 的进程，这里是 `sshd`（SSH 服务）。                                      |
 
 
+---
+
+## 常用命令
+
+查看网络接口是否up：
+```
+ip -br addr
+```
+
+
+
+
