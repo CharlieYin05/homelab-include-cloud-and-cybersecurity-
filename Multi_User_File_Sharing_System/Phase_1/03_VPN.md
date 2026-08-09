@@ -5,7 +5,8 @@
 ---
 
 ## 目标
-- 让管理员和用户都能远程访问服务器
+- 让管理员和用户都能远程访问 FSS 服务器
+- 重塑整个已有的 Tailnet 规则，让它支持多人使用并增加安全性
 
 --- 
 
@@ -67,6 +68,28 @@ sudo tailscale up
 ```
 
 ### 4.设置 Tailnet 规则
+#### 4.1 创建 Admin Group
+#### 4.2 给fss服务器建立机器身份
+Create tag:
+```
+tag:fss
+```
+Tag owner:
+```
+group:admin
+```
+#### 4.3 给 `cy-server-fss` 赋予 `tag:fss`
+- 然后查看它的拥有者是否从我改成tag：
+```
+tailscale status
+```
+- 本机设备 ping 它的 tailscale ip 看看是否通（应该通）
+- 通过 tailscale IP SSH 去服务器（理论上可以因为规则还是默认 allow-all Grant）
+
+#### 4.4 写规则：建立管理员
+General access rules
+
+
 
 ---
 
@@ -98,7 +121,7 @@ sudo tailscale up
 | `cy-server`   | FSS                      | SSH           |      ✅ |
 | 其他未明确授权流量     | —                        | —             |      ❌ |
 
-### 双管理路径：
+### 双管理路径
 ```
 主路径：
 管理员 → cy-server → SSH → FSS
@@ -107,6 +130,27 @@ sudo tailscale up
 管理员设备 → Tailscale → SSH → FSS
 ```
 
+### 三层授权路径（defense in depth）
+```
+第一层：Tailscale
+────────────────────────
+这个人能不能连接 FSS:445？
+这个人能不能连接 FSS:22？
+
+          ↓ 允许
+
+第二层：Samba
+────────────────────────
+这个 SMB 用户能登录吗？
+能访问 public / restriction / private 哪个 share？
+
+          ↓ 允许
+
+第三层：Linux filesystem ACL
+────────────────────────
+这个 Unix 身份最终对文件
+有 r / w / x 中的哪些权限？
+```
 
 
 ---
