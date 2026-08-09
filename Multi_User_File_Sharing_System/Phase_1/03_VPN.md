@@ -67,7 +67,7 @@ systemctl status tailscaled --no-pager
 sudo tailscale up
 ```
 
-### 4.设置 Tailnet 规则
+### 4.设置 Tailnet 规则（Zero Trust）
 #### 4.1 创建 Admin Group
 #### 4.2 给fss服务器建立机器身份
 Create tag:
@@ -86,10 +86,25 @@ tailscale status
 - 本机设备 ping 它的 tailscale ip 看看是否通（应该通）
 - 通过 tailscale IP SSH 去服务器（理论上可以因为规则还是默认 allow-all Grant）
 
-#### 4.4 写规则：建立管理员
-General access rules
+#### 4.4 重复步骤
+- 创建 `file-user` group
 
+- 创建规则：
+```
+// Administrators can access SSH and SMB on FSS.
+{
+    "src": ["group:admin"],
+    "dst": ["tag:fss"],
+    "ip":  ["tcp:22", "tcp:445"]
+},
 
+// File users can only access SMB on FSS.
+{
+    "src": ["group:file-user"],
+    "dst": ["tag:fss"],
+    "ip":  ["tcp:445"]
+}
+```
 
 ---
 
@@ -161,6 +176,5 @@ General access rules
 tailscale status
 ```
 
-查看
 
 
