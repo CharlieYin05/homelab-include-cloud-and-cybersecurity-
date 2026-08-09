@@ -107,16 +107,12 @@ tailscale status
 ```
 
 #### 4.5 给 `cy-server` 单独创建 tag
+#### 4.6 给 `cy-server` 单独创建写规则
+
+#### 4.7 邀请朋友以 `file-user` 身份加入我的 tailnet
+#### 4.8 再手动把朋友加入 `file-user` group
+#### 4.9 朋友测试服务：
 ```
-Tag name:
-network-hub
-
-group:admin
-
-tag:network-hub
-
-cy-server-fss  → tag:fss
-cy-server      → tag:network-hub
 ```
 
 
@@ -191,5 +187,8 @@ cy-server      → tag:network-hub
 tailscale status
 ```
 
-
+---
+## 注意事项
+1. 新用户加入记得手动拉入 Definitions user-group。
+2. 有什么特殊需要单独写规则，注意规则是单项的。
 
