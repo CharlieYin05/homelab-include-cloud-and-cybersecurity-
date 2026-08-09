@@ -66,6 +66,49 @@ systemctl status tailscaled --no-pager
 sudo tailscale up
 ```
 
+### 4.设置 Tailnet 规则
+
+---
+
+## Tailnet 规则
+
+### Tailnet 身份模型
+```
+用户身份
+    │
+    ├── 管理员（我）
+    └── 普通文件共享用户
+
+设备身份
+    │
+    ├── 普通个人设备
+    ├── FSS
+    └── 网络中枢服务器 / Subnet Router
+```
+
+### 规则表
+| Source        | Destination              | Service       | Result |
+| ------------- | ------------------------ | ------------- | -----: |
+| 普通 Tailnet 用户 | FSS                      | SMB TCP/445   |      ✅ |
+| 普通 Tailnet 用户 | FSS                      | SSH TCP/22    |      ❌ |
+| 普通 Tailnet 用户 | `cy-server`              | SSH/Web/Admin |      ❌ |
+| 普通 Tailnet 用户 | 家庭 LAN `192.168.50.0/24` | 任意            |      ❌ |
+| 管理员设备         | FSS                      | SMB           |      ✅ |
+| 管理员设备         | FSS                      | SSH           |      ✅ |
+| `cy-server`   | FSS                      | SSH           |      ✅ |
+| 其他未明确授权流量     | —                        | —             |      ❌ |
+
+### 双管理路径：
+```
+主路径：
+管理员 → cy-server → SSH → FSS
+
+备用路径：
+管理员设备 → Tailscale → SSH → FSS
+```
+
+
+
 ---
 
 ## Tailscale 运维常用命令
