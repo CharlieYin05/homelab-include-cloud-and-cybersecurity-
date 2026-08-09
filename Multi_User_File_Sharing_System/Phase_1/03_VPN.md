@@ -106,6 +106,21 @@ tailscale status
 }
 ```
 
+#### 4.5 给 `cy-server` 单独创建 tag
+```
+Tag name:
+network-hub
+
+group:admin
+
+tag:network-hub
+
+cy-server-fss  → tag:fss
+cy-server      → tag:network-hub
+```
+
+
+
 ---
 
 ## Tailnet 规则
