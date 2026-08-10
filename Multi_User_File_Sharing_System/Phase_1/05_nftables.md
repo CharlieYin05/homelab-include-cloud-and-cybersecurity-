@@ -29,7 +29,66 @@ Loopback ────────────────────── 允�
 其他未授权入站 ─────────────────── DROP
 ```
 ---
+## 前期准备
+由于上一章节访问 FSS 存在两个路径：
+- Tailnet 原生路径
+- Subnet Router 路径
 
+所以需要先观察流量
+
+### 1.安装抓包工具
+安装 `tcpdump`
+```
+sudo apt update
+sudo apt install tcpdump
+
+tcpdump --version
+```
+
+### 2.抓 FSS 上的 SSH 和 SMB 相关的 TCP 流量
+FSS 上运行：
+```
+sudo tcpdump -ni enp3s0 'tcp port 445 or tcp port 22'
+```
+然后 Mac 依次上运行：
+```
+nc -vz 100.105.XXX.XXX 445
+nc -vz fss.cy-server.com 445
+nc -vz fss.cy-server.com 22
+```
+#### 根据输出可以断定：
+##### 对于直接访问 Tailscale IP：
+```
+Mac
+ ↓
+Tailscale
+ ↓
+tailscale0
+ ↓
+FSS
+```
+FSS 可以看到这是从 `iifname = tailscale0` 进入。
+
+##### 对于从fss.cy-server.com访问：
+```
+Mac / 普通用户
+        ↓
+Tailscale Grants
+        ↓
+cy-server
+        ↓ SNAT
+192.168.50.13
+        ↓
+enp3s0
+        ↓
+FSS
+```
+FSS nftables 只能看到：
+```
+iifname = enp3s0
+ip saddr = 192.168.50.13
+```
+说明通过 Subnet Router 后，两者在 FSS 看起来都是同一个 IP。这个身份区分必须继续由 Tailscale Grants 做。
 
 
 ---
