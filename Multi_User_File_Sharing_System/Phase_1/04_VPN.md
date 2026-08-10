@@ -154,6 +154,51 @@ nc -vz -w 5 100.65.XXX.XXX 8000
 nc -vz -w 5 100.65.XXX.XXX 4430
 ```
 #### 4.9 测试通过后删除默认的全局透明规则
+
+### 5.让 FSS 能被 `fss.cy-server.com` 域名访问
+#### 5.1 进入路由器设置 LAN DNS（一个服务对应一个IP）
+编辑 LAN DNS 配置文件：
+```
+vi /jffs/configs/dnsmasq.conf.add
+```
+覆盖为：
+```
+# ==================================================
+# Homelab Internal DNS
+# ==================================================
+
+# cy-server
+host-record=cy-server.com,192.168.XXX.XXX
+host-record=portainer.cy-server.com,192.168.XXX.XXX
+host-record=kvm.cy-server.com,192.168.XXX.XXX
+host-record=clipcascade.cy-server.com,192.168.XXX.XXX
+host-record=npm.cy-server.com,192.168.XXX.XXX
+
+# File Sharing Server
+host-record=fss.cy-server.com,192.168.XXX.XXX
+```
+保存后重启：
+```
+service restart_dnsmasq
+```
+#### cy-server.com 的 DNS 架构：
+```
+                    cy-server.com
+                         │
+          ┌──────────────┴──────────────┐
+          │                             │
+      私有服务                       公网服务
+   LAN / Tailscale                  Internet
+          │                             │
+   路由器 dnsmasq                  Cloudflare DNS
+          │                             │
+   ├─ fss → .XX                   └─ travelblog → OCI
+   ├─ portainer → .XX
+   ├─ kvm → .XX
+   ├─ npm → .XX
+   └─ clipcascade → .XX
+```
+
 ---
 ## 遇到的问题1
 
