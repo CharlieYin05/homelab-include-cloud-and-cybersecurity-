@@ -9,23 +9,84 @@
 - 重塑整个已有的 Tailnet 规则，让它支持多人使用并增加安全性
 
 --- 
-
 ## 架构
-
 ```
-                         FSS
-                  ┌───────┴────────┐
-                  │                │
-              SMB :445          SSH :22
-                  │                │
-        ┌─────────┴──────┐         │
-        │                │         │
-      LAN            Tailnet     中枢服务器
-192.168.50.0/24     授权设备    192.168.XX.XX
-        │                │         │
-      ACCEPT           ACCEPT    ACCEPT
+                         ┌─────────────────────┐
+                         │   cy-server-fss     │
+                         │        FSS          │
+                         │     tag:fss         │
+                         │  192.168.XX.XX      │
+                         │  100.105.xxx.xxx    │
+                         └─────────┬───────────┘
+                                   │
+                    ┌──────────────┼──────────────┐
+                    │              │              │
+                 TCP/445        TCP/22         TCP/22
+                   SMB            SSH            SSH
+                    │              │              │
+                    │              │              │
+          ┌─────────▼──────┐ ┌────▼───────┐ ┌────▼─────────────┐
+          │ group:file-user│ │ group:admin│ │     cy-server    │
+          │   普通文件用户   │ │    管理员   │ │   网络中枢服务器   │
+          └─────────┬──────┘ └────┬───────┘ │ 192.168.XX.XX    │
+                    │              │        │ 100.65.xxx.xxx   │
+                    │              │        │ Subnet Router    │
+                    │              │        └────────┬─────────┘
+                    │              │                  │
+                    └──────────────┼──────────────────┘
+                                   │
+                         ┌─────────▼─────────┐
+                         │     Tailnet       │
+                         │ Tailscale Grants │
+                         │  Least Privilege │
+                         └─────────┬─────────┘
+                                   │
+             ┌─────────────────────┼──────────────────────┐
+             │                     │                      │
+             ▼                     ▼                      ▼
+       tag:fss              tag:network-hub        192.168.50.0/24
+       FSS 服务               中枢服务器服务              家庭 LAN
+             │                     │                      │
+       ┌─────┴─────┐         ┌─────┴──────┐         ┌─────┴──────┐
+       │           │         │            │         │            │
+     :445        :22       SSH :22    本机运行服务   Router       其他设备
+     SMB         SSH                             192.168.50.1
+       │           │                                  │
+file-user ✅   file-user ❌                      file-user ❌
+admin     ✅   admin     ✅                      admin     ✅
 ```
 
+## 权限
+```
+访问关系：
+
+group:file-user
+    └──→ tag:fss
+          └── TCP/445 SMB                 ✅
+    └──→ FSS SSH / cy-server / Home LAN   ❌
+
+
+group:admin
+    ├──→ tag:fss
+    │     ├── TCP/445 SMB                 ✅
+    │     └── TCP/22  SSH                 ✅
+    │
+    ├──→ tag:network-hub
+    │     ├── TCP/22   SSH                ✅
+    │     └── TCP/8787 ClipCascade        ✅
+    │
+    └──→ 192.168.50.1
+          ├── TCP/80       Router Web     ✅
+          └── TCP/UDP 53   DNS            ✅
+
+
+cy-server
+    └──→ FSS TCP/22 SSH                   ✅
+
+
+其他未明确授权的 Tailnet 流量
+    └──→ DROP / DENY                      ❌
+```
 ---
 
 ## 过程
