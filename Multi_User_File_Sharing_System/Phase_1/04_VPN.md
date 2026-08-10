@@ -180,6 +180,7 @@ nc -vz 100.105.XXX.XXX 445
 # SSH（以下应该超时）
 nc -vz -w 5 100.105.XXX.XXX 22
 
+# LAN 内部服务（以下应该超时）
 nc -vz -w 5 100.65.XXX.XXX 22
 nc -vz -w 5 100.65.XXX.XXX 8787
 nc -vz -w 5 100.65.XXX.XXX 8000
@@ -456,38 +457,18 @@ Router DNS TCP :53
 | `cy-server`   | FSS                      | SSH           |      ✅ |
 | 其他未明确授权流量     | —                        | —             |      ❌ |
 
-### 双管理路径
-```
-主路径：
-管理员 → cy-server → SSH → FSS
+### 访问 FSS 路径
 
-备用路径：
-管理员设备 → Tailscale → SSH → FSS
-```
+#### 管理员
+- SSH：用户设备 → Tailscale magicDNS → FSS
+- SSH：用户设备 → 路由器 DNS 解析 → FSS（经过 192.168.50.1:53）
+- SSH：用户设备 → cy-server → FSS
+- SMB：用户设备 → Tailscale magicDNS → FSS
+- SMB：用户设备 → 路由器 DNS 解析 → FSS
 
-### 三层授权路径（defense in depth）
-```
-第一层：Tailscale
-────────────────────────
-这个人能不能连接 FSS:445？
-这个人能不能连接 FSS:22？
-
-          ↓ 允许
-
-第二层：Samba
-────────────────────────
-这个 SMB 用户能登录吗？
-能访问 public / restriction / private 哪个 share？
-
-          ↓ 允许
-
-第三层：Linux filesystem ACL
-────────────────────────
-这个 Unix 身份最终对文件
-有 r / w / x 中的哪些权限？
-```
-
-
+#### file-user
+- SMB：用户设备 → Tailscale magicDNS → FSS
+- SMB：用户设备 → 路由器 DNS 解析 → FSS（经过 192.168.50.1:53）
 ---
 
 ## Tailscale 运维常用命令
@@ -495,7 +476,7 @@ Router DNS TCP :53
 ```
 tailscale status
 ```
-测试延迟：
+测试延迟和查看是否中继：
 ```
 tailscale ping <对方IP>
 ```
