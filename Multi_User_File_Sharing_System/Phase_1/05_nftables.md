@@ -4,7 +4,7 @@
 
 ---
 ## 目标：
-实现分层防御（defense in depth）中的服务器本机防护这一环。即是 VPN 规则失效未授权用户也无法访问 FSS 的未授权端口（多一层授权 Authorization）。大致想要实现效果如下：
+实现分层防御（Defense in Depth）中的服务器本机防护这一环。即是 VPN 规则失效未授权用户也无法访问 FSS 的未授权端口（多一层授权 Authorization）。大致想要实现效果如下：
 ```
 FSS 主机防火墙
 
