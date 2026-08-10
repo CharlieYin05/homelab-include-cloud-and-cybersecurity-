@@ -401,14 +401,14 @@ Router DNS TCP :53
 
 #### 管理员
 - SSH：用户设备 → Tailscale magicDNS → FSS
-- SSH：用户设备 → 路由器 DNS 解析 → FSS（经过 192.168.50.1:53）
+- SSH：用户设备 → Tailscale splitDNS → 路由器 DNS 解析 → FSS
 - SSH：用户设备 → cy-server → FSS
 - SMB：用户设备 → Tailscale magicDNS → FSS
 - SMB：用户设备 → 路由器 DNS 解析 → FSS
 
 #### file-user
 - SMB：用户设备 → Tailscale magicDNS → FSS
-- SMB：用户设备 → 路由器 DNS 解析 → FSS（经过 192.168.50.1:53）
+- SMB：用户设备 → 用户设备 → Tailscale splitDNS → 路由器 DNS 解析 → FSS
 ---
 
 ## Tailscale 运维常用命令
