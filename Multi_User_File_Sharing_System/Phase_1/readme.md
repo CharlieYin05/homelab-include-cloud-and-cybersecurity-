@@ -10,22 +10,13 @@
 ✓ 建立 /srv 目录结构
         │
         ▼
-✓ 创建 Linux 用户
-        │
-        ▼
 ✓ 创建 Linux 组
         │
         ▼
 ✓ 配置目录权限（owner / group / ACL）
         │
         ▼
-✓ 安装 Samba
-        │
-        ▼
-✓ 创建 Samba 用户
-        │
-        ▼
-✓ 配置 smb.conf
+✓ 搭建 Samba 文件共享服务
         │
         ▼
 ✓ 测试 iOS, Android, macOS, Windows 访问
