@@ -1,4 +1,4 @@
-# 安装 VPN
+# 搭建 VPN
 
 **2026-08-09**
 
@@ -7,7 +7,7 @@
 ## 目标
 - 让管理员和用户都能远程访问 FSS 服务器
 - 重塑整个已有的 Tailnet 规则，让它支持多人使用并增加安全性
-- Tailnet 通过只允许 Grants 来实现 Zero Trust 并符合最小权限原则（Principle of Least Privilege）
+- Tailnet 通过只允许 Grants 来实现 Zero Trust ，以此符合最小权限原则（Principle of Least Privilege）
 
 --- 
 ## 架构
@@ -136,7 +136,7 @@ Tag owner:
 group:admin
 ```
 #### 4.4 给 `cy-server` 单独创建 tag 并手动赋予
-#### 4.5 根据 Tailnet 规则* 写规则
+#### 4.5 根据 Tailnet 规则* 写 Grants
 #### 4.6 邀请朋友以 `file-user` 身份加入我的 Tailnet
 #### 4.7 再*手动*把朋友加入 `file-user` Group
 #### 4.8 朋友测试服务：
