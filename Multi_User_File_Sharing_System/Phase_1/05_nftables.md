@@ -88,8 +88,80 @@ FSS nftables 只能看到：
 iifname = enp3s0
 ip saddr = 192.168.50.13
 ```
-说明通过 Subnet Router 后，两者在 FSS 看起来都是同一个 IP。这个身份区分必须继续由 Tailscale Grants 做。
+说明通过 Subnet Router 后，两者在 FSS 看起来都是同一个 IP LAN。
 
+#### `file-user` 理想架构
+```
+              用户
+               │
+        fss.cy-server.com
+               │
+               ▼
+  100.105.XXX.XXX (FSS tailscale IP)
+               │
+          Tailscale
+               │
+        Tailscale Grants
+               │
+          tailscale0
+               │
+           nftables
+               │
+          Samba :445
+```
+
+### 3.修改架构
+#### 3.1 修改路由器LAN DNS
+只把 `fss.cy-server.com` 指向从本地 LAN IP 改成 Tailscale IP
+
+#### 3.2 切断旧的 FSS Subnet Router 路径
+把：
+```
+{
+    "src": ["group:admin"],
+    "dst": ["tag:fss", "host:fss-lan"],
+    "ip":  ["tcp:22", "tcp:445"]
+},
+{
+    "src": ["group:file-user"],
+    "dst": ["tag:fss", "host:fss-lan"],
+    "ip":  ["tcp:445"]
+}
+```
+改成：
+```
+{
+    "src": ["group:admin"],
+    "dst": ["tag:fss"],
+    "ip":  ["tcp:22", "tcp:445"]
+},
+{
+    "src": ["group:file-user"],
+    "dst": ["tag:fss"],
+    "ip":  ["tcp:445"]
+}
+```
+#### 新架构
+```
+访问 FSS 的流量统一了由 `tailscale0` 入站，利好下一章节的流量监控日志。
+Internet / LAN
+     │
+   enp3s0
+     │
+     ├── Tailscale UDP transport → 允许
+     ├── SSH 22                  → DROP
+     ├── SMB 445                 → DROP
+     ├── NetBIOS 137/138/139     → DROP
+     └── 其他入站                → 默认 DROP
+
+Tailnet
+     │
+ tailscale0
+     │
+     ├── SSH 22  → 允许
+     ├── SMB 445 → 允许
+     └── 其他     → 默认 DROP
+```
 
 ---
 
