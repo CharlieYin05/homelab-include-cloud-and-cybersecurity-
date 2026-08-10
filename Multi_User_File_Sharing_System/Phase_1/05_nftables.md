@@ -188,7 +188,7 @@ IP Packet
 
 ### 关于 Socket
 
-当 sshd 需要占用 22/TCP 时：
+当 smbd 需要占用 445/TCP 时：
 ```
 客户端
     │
