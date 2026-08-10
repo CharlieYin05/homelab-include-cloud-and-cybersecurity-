@@ -192,20 +192,20 @@ IP Packet
 ```
 客户端
     │
-连接22端口
+连接445端口
     │
     ▼
 systemd监听22端口
     │
 发现有人连接
     │
-启动 sshd.service
+启动 smbd.service
     │
-把连接交给 sshd
+把连接交给 smbd
     │
-sshd开始认证
+smbd 开始认证
 ```
-22 端口先由 systemd 的 socket 接管，有连接时再启动 sshd。socket 相当于 进程的 “端口占位器 + 连接接收器”。
+445 端口先由 systemd 的 socket 接管，有连接时再启动 smbd。socket 相当于 进程的 “端口占位器 + 连接接收器”。
 
 
 ### 数据流
