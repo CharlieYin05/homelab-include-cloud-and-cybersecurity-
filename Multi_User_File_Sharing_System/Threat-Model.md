@@ -19,27 +19,39 @@
 
 ## 6. Security Controls
 
-管理员 SSH fss服务器
-```
-                    Internet
-                        │
-                 Tailscale Tailnet
-                        │
-          ┌─────────────┴─────────────┐
-          │                           │
-          ▼                           ▼
-     管理员设备                  网络中枢服务器
- (MacBook/Windows)             (Jump Host)
-          │                           │
-          │ SSH（ACL允许）             │ SSH
-          │                           │
-          └─────────────┬─────────────┘
-                        ▼
-                  fss 文件服务器
-```
-
 ## 7. Residual Risks
 
 ## 8. Out of Scope
 
 ## 9. Acceptance Criteria
+
+---
+
+验证（Authentication）与授权（Authorization）防御链
+```
+① Tailscale
+   Authentication
+   “你是谁 / 是哪个设备？”
+          ↓
+   Authorization
+   Grants：
+   group:file-user → tag:fss:445
+          ↓
+
+② nftables
+   Authorization
+   “这个来源/接口能不能访问这个端口？”
+          ↓
+
+③ Samba
+   Authentication
+   “Samba 用户名密码正确吗？”
+          ↓
+   Authorization
+   “这个用户能访问哪个 Share？”
+          ↓
+
+④ Linux filesystem
+   Authorization
+   “这个 Unix 身份对文件 r/w/x 哪些权限？”
+```
