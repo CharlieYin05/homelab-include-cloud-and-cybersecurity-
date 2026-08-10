@@ -7,6 +7,7 @@
 ## 目标
 - 让管理员和用户都能远程访问 FSS 服务器
 - 重塑整个已有的 Tailnet 规则，让它支持多人使用并增加安全性
+- Tailnet 通过只允许 Grants 来实现 Zero Trust 并符合最小权限原则（Principle of Least Privilege）
 
 --- 
 ## 架构
@@ -56,36 +57,30 @@ file-user ✅   file-user ❌                      file-user ❌
 admin     ✅   admin     ✅                      admin     ✅
 ```
 
-## 权限
+## Tailnet 规则*
 ```
-访问关系：
-
 group:file-user
     └──→ tag:fss
-          └── TCP/445 SMB                 ✅
-    └──→ FSS SSH / cy-server / Home LAN   ❌
-
+          └── TCP/445      SMB            ✅
+    └──→ host:home-router
+          └── TCP/UDP 53   DNS            ✅
 
 group:admin
     ├──→ tag:fss
-    │     ├── TCP/445 SMB                 ✅
-    │     └── TCP/22  SSH                 ✅
+    │     ├── TCP/445      SMB            ✅
+    │     └── TCP/22       SSH            ✅
     │
     ├──→ tag:network-hub
-    │     ├── TCP/22   SSH                ✅
-    │     └── TCP/8787 ClipCascade        ✅
+    │     ├── TCP/22       SSH            ✅
+    │     └── TCP/XXX      本机运行服务     ✅
     │
-    └──→ 192.168.50.1
+    └──→ host:home-router
           ├── TCP/80       Router Web     ✅
           └── TCP/UDP 53   DNS            ✅
 
 
-cy-server
-    └──→ FSS TCP/22 SSH                   ✅
-
-
 其他未明确授权的 Tailnet 流量
-    └──→ DROP / DENY                      ❌
+    └──→ DROP                             ❌
 ```
 ---
 
@@ -129,8 +124,9 @@ sudo tailscale up
 ```
 
 ### 4.设置 Tailnet 规则（Zero Trust）
-#### 4.1 创建 Admin Group
-#### 4.2 给fss服务器建立机器身份
+#### 4.1 创建 `admin` Group
+#### 4.2 创建 `file-user` Group
+#### 4.3 给 `cy-server-fss` 单独创建 tag 并手动赋予
 Create tag:
 ```
 tag:fss
@@ -139,40 +135,11 @@ Tag owner:
 ```
 group:admin
 ```
-#### 4.3 给 `cy-server-fss` 赋予 `tag:fss`
-- 然后查看它的拥有者是否从我改成tag：
-```
-tailscale status
-```
-- 本机设备 ping 它的 tailscale ip 看看是否通（应该通）
-- 通过 tailscale IP SSH 去服务器（理论上可以因为规则还是默认 allow-all Grant）
-
-#### 4.4 重复步骤
-- 创建 `file-user` group
-
-- 创建规则：
-```
-// Administrators can access SSH and SMB on FSS.
-{
-    "src": ["group:admin"],
-    "dst": ["tag:fss"],
-    "ip":  ["tcp:22", "tcp:445"]
-},
-
-// File users can only access SMB on FSS.
-{
-    "src": ["group:file-user"],
-    "dst": ["tag:fss"],
-    "ip":  ["tcp:445"]
-}
-```
-
-#### 4.5 给 `cy-server` 单独创建 tag
-#### 4.6 给 `cy-server` 单独创建写规则
-
-#### 4.7 邀请朋友以 `file-user` 身份加入我的 tailnet
-#### 4.8 再手动把朋友加入 `file-user` group
-#### 4.9 朋友测试服务：
+#### 4.4 给 `cy-server` 单独创建 tag 并手动赋予
+#### 4.5 根据 Tailnet 规则* 写规则
+#### 4.6 邀请朋友以 `file-user` 身份加入我的 Tailnet
+#### 4.7 再*手动*把朋友加入 `file-user` Group
+#### 4.8 朋友测试服务：
 ```
 # SMB（应该成功）
 nc -vz 100.105.XXX.XXX 445
@@ -186,11 +153,12 @@ nc -vz -w 5 100.65.XXX.XXX 8787
 nc -vz -w 5 100.65.XXX.XXX 8000
 nc -vz -w 5 100.65.XXX.XXX 4430
 ```
+#### 4.9 测试通过后删除默认的全局透明规则
 ---
 ## 遇到的问题1
 
 ### 症状：
-在 Mac 开启 Tailscale 后出现：
+完成步骤4.9后在 Mac 开启 Tailscale 后出现：
 - Tailscale 内部设备仍可访问。
 - SMB 等 Tailscale 服务正常。
 - 普通互联网网站大部分无法打开。
@@ -429,34 +397,6 @@ Router DNS TCP :53
 
 ---
 
-## Tailnet 规则
-
-### Tailnet 身份模型
-```
-用户身份
-    │
-    ├── 管理员（我）
-    └── 普通文件共享用户
-
-设备身份
-    │
-    ├── 普通个人设备
-    ├── FSS
-    └── 网络中枢服务器 / Subnet Router
-```
-
-### 规则表
-| Source        | Destination              | Service       | Result |
-| ------------- | ------------------------ | ------------- | -----: |
-| 普通 Tailnet 用户 | FSS                      | SMB TCP/445   |      ✅ |
-| 普通 Tailnet 用户 | FSS                      | SSH TCP/22    |      ❌ |
-| 普通 Tailnet 用户 | `cy-server`              | SSH/Web/Admin |      ❌ |
-| 普通 Tailnet 用户 | 家庭 LAN `192.168.50.0/24` | 任意            |      ❌ |
-| 管理员设备         | FSS                      | SMB           |      ✅ |
-| 管理员设备         | FSS                      | SSH           |      ✅ |
-| `cy-server`   | FSS                      | SSH           |      ✅ |
-| 其他未明确授权流量     | —                        | —             |      ❌ |
-
 ### 访问 FSS 路径
 
 #### 管理员
@@ -484,5 +424,8 @@ tailscale ping <对方IP>
 ---
 ## 注意事项
 1. 新用户加入记得手动拉入 Definitions user-group。
-2. 有什么特殊需要单独写出入站规则，注意规则是单项的。
-
+2. 有什么特殊需要单独写出入站规则，注意规则是单向的。
+3. 写规则通常
+   - Souce：哪个 Group
+   - Destination：哪个 Tag/Host
+   - Protocol：'TCP:<端口号>' 或者 'UDP:<端口号>'
