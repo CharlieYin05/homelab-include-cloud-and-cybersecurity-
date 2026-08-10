@@ -353,7 +353,7 @@ default:other::---
 
 ---
 
-## 排错（已排除 Samba 认证后）
+## 排错（过了 Samba 认证后）
 ### Permission denied
 1. User 是否属于正确 Group？
 ```
@@ -368,6 +368,8 @@ getfacl
 ls -ld
 ```
 4. 重新登录
+
+---
 
 ## 命名规范
 
