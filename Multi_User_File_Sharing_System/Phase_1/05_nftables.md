@@ -69,7 +69,7 @@ FSS
 ```
 FSS 可以看到这是从 `iifname = tailscale0` 进入。
 
-##### 对于从fss.cy-server.com访问：
+##### 对于从 `fss.cy-server.com` 访问：
 ```
 Mac / 普通用户
         ↓
