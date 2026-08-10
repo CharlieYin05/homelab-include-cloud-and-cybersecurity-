@@ -1,14 +1,14 @@
 # 创建 Linux 与 Samba 用户
 
 ## 创建 Linux 用户
-'''
+```
 sudo useradd -M -s /usr/sbin/nologin <用户名>
-’‘’
+```
 
 ## 创建该用户密码
-'''
+```
 sudo passwd <用户名>
-'''
+```
 
 ## 给该用户分组
 ```
