@@ -454,6 +454,79 @@ Router DNS TCP :53
 #### file-user
 - SMB：用户设备 → Tailscale magicDNS → FSS
 - SMB：用户设备 → Tailscale splitDNS → 路由器 DNS → FSS
+
+---
+## 最终 Grants 配置
+```
+{
+	"grants": [
+		// 管理员既可以通过 Tailscale IP，也可以通过 fss.cy-server.com 来 SSH 与 SMB 访问 FSS
+		{
+			"src": ["group:admin"],
+			"dst": ["tag:fss", "host:fss-lan"],
+			"ip":  ["tcp:22", "tcp:445"],
+		},
+		// 用户能通过 Tailscale IP 和 fss.cy-server.com 来访问 FSS 的 SMB 服务
+		{
+			"src": ["group:file-user"],
+			"dst": ["tag:fss", "host:fss-lan"],
+			"ip":  ["tcp:445"],
+		},
+		// 管理员可以通过 Tailscale IP 和 `*.cy-server.com` 来访问 cy-server 各个服务
+		{
+			"src": ["group:admin"],
+			"dst": ["tag:network-hub", "host:cy-server-lan"],
+			"ip":  ["tcp:22", "tcp:443"],
+		},
+		// 管理员可以访问家里路由器
+		{
+			"src": ["group:admin"],
+			"dst": ["host:home-router"],
+			"ip":  ["tcp:80"],
+		},
+		// 用于管理员和用户使用路由器的 DNS 解析服务，用于解析 '*.cy-server.com'
+		{
+			"src": ["group:admin", "group:file-user"],
+			"dst": ["host:home-router"],
+			"ip":  ["tcp:53", "udp:53"],
+		},
+	],
+
+	"ssh": [
+		{
+			"action": "check",
+			"src":    ["autogroup:member"],
+			"dst":    ["autogroup:self"],
+			"users":  ["autogroup:nonroot", "root"],
+		},
+	],
+
+	"groups": {
+		"group:admin": ["admin@XXX.com"],
+		"group:file-user": ["user0@XXX.com"],
+	},
+
+	"tagOwners": {
+		// 通过 Tailnet 原生 IP 找 FSS
+		"tag:fss": ["group:admin"],
+
+		// 通过 Tailnet 原生 IP 找 cy-server
+		"tag:network-hub": ["group:admin"],
+	},
+
+	"hosts": {
+		// 通过 Subnet Router 找家里路由器
+		"home-router": "192.168.50.1",
+
+		// 通过 Subnet Router 找 cy-server 的 LAN IP
+		"cy-server-lan": "192.168.XXX.XXX",
+
+		// 通过 Subnet Router 找 FSS 的 LAN IP
+		"fss-lan": "192.168.XXX.XXX",
+	},
+}
+```
+
 ---
 
 ## Tailscale 运维常用命令
@@ -471,6 +544,6 @@ tailscale ping <对方IP>
 1. 新用户加入记得手动拉入 Definitions user-group。
 2. 有什么特殊需要单独写出入站规则，注意规则是单向的。
 3. 写规则通常
-   - Souce：哪个 Group
+   - Source：哪个 Group
    - Destination：哪个 Tag/Host
    - Protocol：'TCP:<端口号>' 或者 'UDP:<端口号>'
