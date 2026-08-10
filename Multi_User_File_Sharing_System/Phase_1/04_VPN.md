@@ -404,7 +404,7 @@ Router DNS TCP :53
 - SSH：用户设备 → Tailscale splitDNS → 路由器 DNS 解析 → FSS
 - SSH：用户设备 → cy-server → FSS
 - SMB：用户设备 → Tailscale magicDNS → FSS
-- SMB：用户设备 → 路由器 DNS 解析 → FSS
+- SMB：用户设备 → Tailscale splitDNS → 路由器 DNS 解析 → FSS
 
 #### file-user
 - SMB：用户设备 → Tailscale magicDNS → FSS
