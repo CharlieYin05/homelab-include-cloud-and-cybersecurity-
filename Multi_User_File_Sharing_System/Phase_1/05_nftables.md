@@ -165,6 +165,60 @@ Tailnet
 
 ---
 
+## 设计 INPUT 的处理顺序
+### Input Chain:
+```
+INPUT
+ │
+ ├─ 1. Loopback                         ← 允许本机通信自通
+ │      └─ ACCEPT
+ │
+ ├─ 2. Established / Related            ← 允许已建立的连接入站
+ │      └─ ACCEPT
+ │
+ ├─ 3. Invalid                          ← conntrack 无法合理归类的包直接丢掉
+ │      └─ DROP
+ │
+ ├─ 4. 必要 ICMP / ICMPv6                ← 初步允许 Ping
+ │      └─ ACCEPT
+ │
+ ├─ 5. enp3s0 的 Tailscale UDP           ← 允许 Tailscale 自己建立隧道入站
+ │      └─ ACCEPT
+ │
+ ├─ 6. tailscale0                        ← 允许 tailscale0 只开放的 FSS 服务（细分）
+ │      ├─ TCP 22  → ACCEPT
+ │      └─ TCP 445 → ACCEPT
+ │
+ └─ 7. 其他                               ← 什么都没匹配到直接丢掉
+        └─ DROP
+```
+
+Input Chain 逻辑架构图：
+```
+                       INPUT
+                         │
+             ┌───────────┴───────────┐
+             │                       │
+           合法？                  不匹配
+             │                       │
+             ▼                       ▼
+           ACCEPT                  DROP
+             │
+     ┌───────┼─────────┐
+     │       │         │
+    lo    已建立     必要网络协议
+                     │
+             ┌───────┴────────┐
+             │                │
+       Tailscale底层       tailscale0
+                              │
+                         ┌────┴────┐
+                         │         │
+                       SSH 22    SMB 445
+```
+
+---
+
 ## 网络知识补充
 
 ### L3 Packet结构为：
@@ -237,6 +291,21 @@ smbd 开始认证
    ▼           ▼
 交给应用      TCP RST
 (sshd/smbd)  (Connection Refused)
+```
+
+### 关于 INPUT chain
+```
+NIC
+ │
+ ▼
+Kernel
+ │
+ ▼
+INPUT chain
+ │
+ ├── ACCEPT → smbd / sshd / tailscaled
+ │
+ └── DROP   → 丢弃
 ```
 
 ---
