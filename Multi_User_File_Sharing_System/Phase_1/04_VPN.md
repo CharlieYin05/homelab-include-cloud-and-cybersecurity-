@@ -354,7 +354,7 @@ tailscale set --accept-routes=false
 ```
 再次 `tailscale dns query google.com` 立刻成功。这直接锁定故障与 Tailscale 接受 192.168.50.0/24 Subnet Route 有直接关系。
 
-### 7. 怀疑 Tailscale AC 导致的断网
+### 7. 怀疑 Tailscale Access Control 导致的故障
 回顾一下之前一直用的好好的，直到刚刚实施 Zero Trust，删除了 Allow All，改成精确 Grants。后才出现故障合理怀疑漏了一个基础设施依赖：
 ```
 Router DNS
@@ -429,7 +429,7 @@ Router DNS TCP :53
 用户显式使用：
 ├── SMB 445
 ├── SSH 22
-├── ClipCascade 8787
+├── NPM 443 
 └── Router HTTP 80
 
 容易遗漏的基础设施：
