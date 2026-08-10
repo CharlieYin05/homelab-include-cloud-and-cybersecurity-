@@ -90,7 +90,7 @@ ip saddr = 192.168.50.13
 ```
 说明通过 Subnet Router 后，两者在 FSS 看起来都是同一个 IP LAN。
 
-#### `file-user` 理想架构
+#### `file-user` 理想流量
 ```
               用户
                │
@@ -142,8 +142,8 @@ ip saddr = 192.168.50.13
 }
 ```
 #### 新架构
+访问 FSS 的流量统一了由 `tailscale0` 入站，利好下一章节的流量监控日志
 ```
-访问 FSS 的流量统一了由 `tailscale0` 入站，利好下一章节的流量监控日志。
 Internet / LAN
      │
    enp3s0
