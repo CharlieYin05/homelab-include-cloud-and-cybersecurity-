@@ -13,8 +13,8 @@ sudo passwd <用户名>
 ## 给该用户分组
 ```
 sudo usermod -aG \
-cy_public_ro,cy_public_rw,\
-cy_restriction_ro,cy_restriction_rw \
+<组名>,<组名>,\
+<组名>,<组名> \
 <用户名>
 ```
 
