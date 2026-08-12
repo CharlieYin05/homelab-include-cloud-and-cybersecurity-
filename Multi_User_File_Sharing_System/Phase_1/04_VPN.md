@@ -463,13 +463,13 @@ Router DNS TCP :53
 		// 管理员既可以通过 Tailscale IP，也可以通过 fss.cy-server.com 来 SSH 与 SMB 访问 FSS
 		{
 			"src": ["group:admin"],
-			"dst": ["tag:fss", "host:fss-lan"],
+			"dst": ["tag:fss"],
 			"ip":  ["tcp:22", "tcp:445"],
 		},
 		// 用户能通过 Tailscale IP 和 fss.cy-server.com 来访问 FSS 的 SMB 服务
 		{
 			"src": ["group:file-user"],
-			"dst": ["tag:fss", "host:fss-lan"],
+			"dst": ["tag:fss"],
 			"ip":  ["tcp:445"],
 		},
 		// 管理员可以通过 Tailscale IP 和 `*.cy-server.com` 来访问 cy-server 各个服务
