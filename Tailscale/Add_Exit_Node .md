@@ -4,7 +4,7 @@
 
 ---
 
-## Add an Exit Node in Tailnet that admin device can use
+## Add an Exit Node in Tailnet that admin's device can use
 
 1. Add exit node in `cy-server`:
 ```
