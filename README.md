@@ -10,13 +10,13 @@ The topology, services, access policies, and device roles documented here repres
 ### Physical Network Topology
 ```
                                    Merlin Router
-                                    -LAN Internal DNS
-                                     -cy-server.com --------------|
-                                     -portainer.cy-server.com ----| 
-                                     -kvm.cy-server.com ----------|----- → cy-server's IP
-                                     -clipcascade.cy-server.com --| 
-                                     -npm.cy-server.com ----------|
-                                     -fss.cy-server.com ---------------- → cy-server-fss's tailscale IP
+                                    - LAN Internal DNS
+                                     - cy-server.com --------------|
+                                     - portainer.cy-server.com ----| 
+                                     - kvm.cy-server.com ----------|----- → cy-server's IP
+                                     - clipcascade.cy-server.com --| 
+                                     - npm.cy-server.com ----------|
+                                     - fss.cy-server.com ---------------- → cy-server-fss's tailscale IP
                                        |
                                        |(Home LAN)
                                        |
@@ -24,18 +24,19 @@ The topology, services, access policies, and device roles documented here repres
   |                                    |                                      |                             |
   |                                    |                                      |                             |
 cy-server                        cy-server-fss                  |======= Windows Work Station         Other Home Device                   
- -Tailscale Exit Node             -Tailscale Access Only        |         -Tailscale node
- -Tailscale Subrouter             -Samba                        |         -Sunshine
- -Docker                          -vfs_full_audit               |         -ClipCascade (Client)                   
-  -ClipCascade (Server)                                         |             |
-  -OneKVM (Controller side) =============(HDMI to USB)==========|             |                
-  -Nginx Proxy Manager                                                        |
+ - Tailscale Exit Node            - Tailscale Access Only       |         - Tailscale node
+ - Tailscale Subrouter            - Samba                       |         - Sunshine
+ - Docker                         - vfs_full_audit              |         - ClipCascade (Client)                   
+  - ClipCascade (Server)                                        |             |
+  - OneKVM (Controller side) ============(HDMI to USB)==========|             |                
+  - Nginx Proxy Manager                                                       |
                                                                           OpenWRT Router
+                                                                           - Wake on LAN
                                                                               |
                                                                               |(Sunshine LAN)
                                                                               |
                                                                          Android Tablet
-                                                                          -Moonlight V+
+                                                                          - Moonlight V+
 ```
 ### Virtual Network (Tailscale) Topology
 ```
@@ -45,11 +46,11 @@ cy-server                        cy-server-fss                  |======= Windows
   |-------------------------------|----------------------------|-------------------------------|----------------------------------|---------------------------|
   |                               |                            |                               |                                  |                           |
 cy-server                   cy-server-fss               Windows Work Station                Macbook                             Mi Play                Other Personal Device
- -Docker                     -Tailscale Access Only      -Sunshine                           -Main Develop Device                -Got Root Privilege    -Moonlight 
-  -ClipCascade (Server)      -Samba                      -ClipCascade (Client)               -ClipCascade (Client)               -nmap                  -SMB access to fss shared folder
-  -OneKVM (Controller side)  -vfs_full_audit             -OneKVM(Controlled End)             -SwitchyOmega----(SOCK5 tunnel)---- -ssh -D
-  -Nginx Proxy Manager            |                      -SMB access to fss shared folder    -SMB access to fss shared folder
- -Tailscale Exit Node             |                                                          -Moonlight
+ - Docker                    - Tailscale Access Only     - Sunshine                          - Main Develop Device               - Got Root Privilege   - Moonlight
+  - ClipCascade (Server)     - Samba                     - ClipCascade (Client)              - ClipCascade (Client)              - nmap                 - SMB access to fss shared folder
+  - OneKVM (Controller side) - vfs_full_audit            - OneKVM(Controlled End)            - SwitchyOmega---(SOCK5 tunnel)---- ssh -D
+  -Nginx Proxy Manager            |                      -SMB access to fss shared folder    - SMB access to fss shared folder
+ -Tailscale Exit Node             |                                                          - Moonlight
  -Tailscale Subrouter---|         |
                         |         |
                         |         |
