@@ -59,21 +59,9 @@ cy-server                   cy-server-fss               Windows Work Station    
                               Other User
                                -SMB Client
 ```
-The tailnet is designed with role-based access control, not flat full-mesh trust.
-- Admin
-  - can use the Exit Node
-  - can access cy-server
-  - can SSH / SMB into cy-server-fss
-  - can access the home router
-  - can use internal DNS
-- File User
-  - can access only SMB on the file server
-  - can use internal DNS for service discovery
-Trust Boundaries
-- infrastructure administration is restricted to admin
-- file sharing is separated onto a dedicated server
-- internal services are resolved through internal DNS / split DNS
-- LAN-only resources are reached through a subnet router, not by exposing the entire LAN directly
+
+Zero-Trust Architecture
+
 
 ## Core Design
 ### cy-server
