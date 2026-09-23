@@ -44,6 +44,18 @@ ___
      │     └── HFish
      └── UFW/iptables
 ```
+---
+## 过程
+1. 系统开放 4433 端口作为管理页面
+进入iptable在INPUT reject all之前添加一条4433
+```
+sudo nano /etc/iptables/rules.v4
+```
+```
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
+**-A INPUT -p tcp -m state --state NEW -m tcp --dport 4433 -j ACCEPT**
+-A INPUT -j REJECT --reject-with icmp-host-prohibited
+```
 ___
 ## 技术栈
   - Oracle Cloud Infrastructure (OCI)
