@@ -63,31 +63,13 @@ cy-server                   cy-server-fss               Windows Work Station    
 ## Core Design
 ### cy-server
 Role: network and service hub
- - Tailscale Exit Node
- -  Tailscale Subnet Router
- -  Docker host
- -  Nginx Proxy Manager
- -  ClipCascade server
- -  OneKVM controller side
 ### cy-server-fss
 Role: dedicated file server
-- Samba-based multi-user file sharing
-- file operation auditing via vfs_full_audit
 ### Windows Workstation
 Role: primary desktop / streaming host
-- Sunshine host
-- ClipCascade client
-- OneKVM controlled endpoint
-- SMB access to file server
 ### Android Tablet
 Role: portable remote display / client
-- Moonlight V+ client over LAN streaming path
 ### MacBook
 Role: main development and administration endpoint
-- Infrastructure access over tailnet
-- SMB access to file server
-- Moonlight access
-- browser proxying through SOCKS5 tunnel
 ### Mi Play
-Role: auxiliary rooted device
-- SSH dynamic forwarding (ssh -D) for SOCKS5 tunneling
+Role: portable network probe
