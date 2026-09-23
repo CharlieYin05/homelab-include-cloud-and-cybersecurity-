@@ -40,22 +40,46 @@ ___
   Public Subnet
      ↓
   Ubuntu
-     ├── Docker
-     │     └── HFish
+     ├── HFish
+     │     
      └── UFW/iptables
 ```
 ---
 ## 过程
-1. 系统开放 4433 端口作为管理页面
-进入iptable在INPUT reject all之前添加一条4433
+1. 在本实例所在的 Oracle Virtual Cloud Network 放行 4433 端口
+```
+Source Type: CIDR
+Source CIDR: 我的公网络IP/32
+IP Protocol: TCP
+Source Port Range: 留空
+Destination Port Range: 4433
+Description: HFish Management
+```
+
+2. 操作系统开放 4433 端口作为管理页面
+进入iptable在INPUT REJECT之前添加一条ACCEPT 4433
 ```
 sudo nano /etc/iptables/rules.v4
 ```
 ```
 -A INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
-**-A INPUT -p tcp -m state --state NEW -m tcp --dport 4433 -j ACCEPT**
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 4433 -j ACCEPT
 -A INPUT -j REJECT --reject-with icmp-host-prohibited
 ```
+3. 关闭 111 端口以减少暴露面
+https://docs.oracle.com/en-us/iaas/Content/File/Troubleshooting/check-mt-network-rpcinfo.htm
+根据甲骨文官方的说明，该端口适用于 OCI File Storage / NFS Mount Target 的连通性检查。我的服务器没有挂载 OCI File Storge，因此可以关闭该端口和 `rpcbind` 进程。
+
+关闭进程：
+```
+sudo systemctl disable --now rpcbind.socket rpcbind.service
+```
+检查：
+```
+ss -lntup
+```
+
+
 ___
 ## 技术栈
   - Oracle Cloud Infrastructure (OCI)
