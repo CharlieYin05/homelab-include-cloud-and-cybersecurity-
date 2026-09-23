@@ -48,10 +48,10 @@ cy-server                        cy-server-fss                  |======= Windows
 cy-server                   cy-server-fss               Windows Work Station                Macbook                             Mi Play                Other Personal Device
  - Docker                    - Tailscale Access Only     - Sunshine                          - Main Develop Device               - Got Root Privilege   - Moonlight
   - ClipCascade (Server)     - Samba                     - ClipCascade (Client)              - ClipCascade (Client)              - nmap                 - SMB access to fss shared folder
-  - OneKVM (Controller side) - vfs_full_audit            - OneKVM(Controlled End)            - SwitchyOmega---(SOCK5 tunnel)---- ssh -D
-  -Nginx Proxy Manager            |                      -SMB access to fss shared folder    - SMB access to fss shared folder
- -Tailscale Exit Node             |                                                          - Moonlight
- -Tailscale Subrouter---|         |
+  - OneKVM (Controller side) - vfs_full_audit            - SMB access to fss shared folder   - SwitchyOmega---(SOCK5 tunnel)---- - ssh -D
+  - Nginx Proxy Manager           |                                                          - SMB access to fss shared folder
+ - Tailscale Exit Node            |                                                          - Moonlight
+ - Tailscale Subrouter--|         |
                         |         |
                         |         |
                        Home LAN   | 
