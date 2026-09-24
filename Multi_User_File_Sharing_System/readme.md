@@ -50,7 +50,7 @@ The system is designed to provide remote file access while keeping administrativ
 ## Security Model
 
 User access passes through multiple independent controls:
-
+```
 Tailscale Identity
       ↓
 Tailscale Grants
@@ -62,7 +62,8 @@ Samba Authentication
 POSIX ACL
       ↓
 Shared Files
- 
+```
+
 ## Documentation
 
 - [Architecture](./Architecture.md)
