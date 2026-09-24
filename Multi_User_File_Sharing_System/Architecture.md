@@ -10,7 +10,7 @@ The system is designed around five principles:
 5. All file operations should be **auditable**.
 
 ## System Architecture
-#### Two Path that can access to fss:
+#### Two Paths that Can Access to cy-server-fss:
 ```
                                      cy-server-fss
                               +-------------------------+
@@ -32,7 +32,7 @@ The system is designed around five principles:
         =============================         ==============================
 ```
 
-#### Two Path Interm of Devices:
+#### Access Paths by Device:
 ```
 
                             Tailnet Devices                          Home LAN Devices
