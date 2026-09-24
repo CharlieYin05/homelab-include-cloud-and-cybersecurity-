@@ -11,34 +11,60 @@ The system is designed around five principles:
 
 ## System Architecture
 ```
-                      Internet
-                          │
-                          │ No Port Forwarding
-                          ▼
-                ┌───────────────────┐
-                │ File Share Server │
-                |  (cy-server-fss)  |
-                │-------------------│
-                │  Tailscale        │
-                │      │            │
-                │  nftables         │
-                │      │            │
-                │  Samba            │
-                │      │            │
-                │  POSIX ACL        │
-                │      │            │
-                │ /srv/shares/shared│
-                └───────────────────┘
+                         MULTI-USER FILE SHARING SYSTEM
+================================================================================
+                                     cy-server-fss
+                              +-------------------------+
+                              |   /srv/shares/shared    |
+                              |          ↑              |
+                              |      POSIX ACL          |
+                              |          ↑              |
+                              | Samba Authentication    |
+                              |          ↑              |
+                              |Linux User Authentication|
+                              |          ↑              |
+                              |       nftables          |
+                              +------+--------+---------+
+                                     ^        ^
+                                     |        |
+                    tailscale0       |        |       LAN interface
+                    100.x.x.x        |        |       192.168.50.x
+                                     |        |
+        =============================+        +=============================
+              TAILNET PATH                           HOME-LAN PATH
+        =============================         ==============================
 
+-------------------------------------------------------------------------------------------------
 
-Admin Device                         User Device
-    │                                  │
-    └──────── Tailscale VPN ───────────┘
-                     │
-                     ▼
-              Tailscale Grants
-          管理员：SSH + SMB
-          用户：仅 SMB TCP 445
+                            Tailnet Devices                         Home LAN Devices
+                                   |                                       |
+                          |--------+---------|                   |---------+---------|
+                          |                  |                   |                   |
+                          v                  v                   v                   v
+                   +-------------+    +-------------+      +-------------+    +-------------+
+                   | File User   |    |    Admin    |      |  cy-server  |    | Other LAN   |
+                   +------+------+    +------+------+      +------+------+    | Devices     |
+                          |                  |                    |           +------+------+
+                          |                  |                    |                  |
+                      SMB :445          SMB :445                  |                  |
+                          |               SSH :22                 |                  |
+                          |                  |                  SSH :22              |
+                          +--------+---------+                    |                  |
+                                   |                              |                  X
+                                   v                              |                 DROP
+                            +-------------+                       | 
+                            |  Tailscale  |                       |
+                            |   Grants    |                       |
+                            +------+------+                       |
+                                   |                              |
+                                   v                              |
+                            +-------------+                       |
+                            |  Tailnet    |                       |
+                            +------+------+                       |
+                                   |                              |
+                                   |                              |
+fss port:445<----(admin & user)----|---(admin)--> fss port:22 <---|
+
 ```
 ## Layered Architecture
 
