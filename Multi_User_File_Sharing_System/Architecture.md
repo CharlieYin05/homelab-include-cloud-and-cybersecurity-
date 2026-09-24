@@ -10,9 +10,8 @@ The system is designed around five principles:
 5. All file operations should be **auditable**.
 
 ## System Architecture
+#### Two Path that can access to fss:
 ```
-                         MULTI-USER FILE SHARING SYSTEM
-================================================================================
                                      cy-server-fss
                               +-------------------------+
                               |   /srv/shares/shared    |
@@ -20,8 +19,6 @@ The system is designed around five principles:
                               |      POSIX ACL          |
                               |          ↑              |
                               | Samba Authentication    |
-                              |          ↑              |
-                              |Linux User Authentication|
                               |          ↑              |
                               |       nftables          |
                               +------+--------+---------+
@@ -33,8 +30,10 @@ The system is designed around five principles:
         =============================+        +=============================
               TAILNET PATH                           HOME-LAN PATH
         =============================         ==============================
+```
 
--------------------------------------------------------------------------------------------------
+#### Two Path interm of devices:
+```
 
                             Tailnet Devices                         Home LAN Devices
                                    |                                       |
@@ -42,7 +41,7 @@ The system is designed around five principles:
                           |                  |                   |                   |
                           v                  v                   v                   v
                    +-------------+    +-------------+      +-------------+    +-------------+
-                   | File User   |    |    Admin    |      |  cy-server  |    | Other LAN   |
+                   | User Device |    | Admin Device|      |  cy-server  |    | Other LAN   |
                    +------+------+    +------+------+      +------+------+    | Devices     |
                           |                  |                    |           +------+------+
                           |                  |                    |                  |
@@ -64,7 +63,6 @@ The system is designed around five principles:
                                    |                              |
                                    |                              |
 fss port:445<----(admin & user)----|---(admin)--> fss port:22 <---|
-
 ```
 ## Layered Architecture
 
