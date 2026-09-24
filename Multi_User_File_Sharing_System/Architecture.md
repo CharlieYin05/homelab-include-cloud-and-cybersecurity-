@@ -32,14 +32,14 @@ The system is designed around five principles:
         =============================         ==============================
 ```
 
-#### Two Path interm of devices:
+#### Two Path Interm of Devices:
 ```
 
-                            Tailnet Devices                         Home LAN Devices
-                                   |                                       |
-                          |--------+---------|                   |---------+---------|
-                          |                  |                   |                   |
-                          v                  v                   v                   v
+                            Tailnet Devices                          Home LAN Devices
+                                   |                                        |
+                          |--------+---------|                    |---------+---------|
+                          |                  |                    |                   |
+                          v                  v                    v                   v
                    +-------------+    +-------------+      +-------------+    +-------------+
                    | User Device |    | Admin Device|      |  cy-server  |    | Other LAN   |
                    +------+------+    +------+------+      +------+------+    | Devices     |
