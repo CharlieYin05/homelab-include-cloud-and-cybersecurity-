@@ -61,8 +61,9 @@ The system is designed around five principles:
                             |  Tailnet    |                       |
                             +------+------+                       |
                                    |                              |
-                                   |                              |
-fss port:445<----(admin & user)----|---(admin)--> fss port:22 <---|
+ cy-server-fss                     |            cy-server-fss     |
+    port:445<----(admin & user)----|---(admin)---->port:22 <------|
+
 ```
 ## Layered Architecture
 
