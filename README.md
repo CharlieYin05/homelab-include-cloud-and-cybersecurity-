@@ -60,19 +60,12 @@ cy-server                   cy-server-fss               Windows Work Station    
                                -SMB Client
 ```
 
-Zero-Trust Architecture
 
-
-## Core Design
-### cy-server
-Role: network and service hub
-### cy-server-fss
-Role: dedicated file server
-### Windows Workstation
-Role: primary desktop / streaming host
-### Android Tablet
-Role: portable remote display / client
-### MacBook
-Role: main development and administration endpoint
-### Mi Play
-Role: portable network probe
+| Node | Primary Role |
+|---|---|
+| `cy-server` | Network hub, Docker host, Exit Node, Subnet Router |
+| `cy-server-fss` | Audited Samba file server |
+| `Windows Workstation` | Sunshine host and main workstation |
+| `MacBook` | Main development / administration client |
+| `Android Tablet` | Moonlight streaming client |
+| `Mi Play` | SSH SOCKS5 tunnel endpoint |
