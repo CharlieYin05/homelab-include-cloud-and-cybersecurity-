@@ -67,8 +67,6 @@ The system is designed around five principles:
 ```
 ## Layered Architecture
 
-## Access Flows
-
 ## Identity & Permission Model
 
 ## Network Interface Model
