@@ -59,6 +59,15 @@ cy-server                   cy-server-fss               Windows Work Station    
                               Other User
                                -SMB Client
 ```
+| Node | Primary Role |
+|---|---|
+| `cy-server` | Network hub, Docker host, Exit Node, Subnet Router |
+| `cy-server-fss` | Audited Samba file server |
+| `Windows Workstation` | Sunshine host and main workstation |
+| `MacBook` | Main development / administration client |
+| `Android Tablet` | Moonlight streaming client |
+| `Mi Play` | SSH SOCKS5 tunnel endpoint |
+
 ### Access Control Model
 The Tailnet is not configured as a flat trusted network.
 Access is granted by role and service.
@@ -73,15 +82,6 @@ Access is granted by role and service.
 | File User | Home Router | DNS only |
 
 > Device membership does not automatically imply access to every service.
-
-| Node | Primary Role |
-|---|---|
-| `cy-server` | Network hub, Docker host, Exit Node, Subnet Router |
-| `cy-server-fss` | Audited Samba file server |
-| `Windows Workstation` | Sunshine host and main workstation |
-| `MacBook` | Main development / administration client |
-| `Android Tablet` | Moonlight streaming client |
-| `Mi Play` | SSH SOCKS5 tunnel endpoint |
 
 ### Key Traffic Flows
 ```text
