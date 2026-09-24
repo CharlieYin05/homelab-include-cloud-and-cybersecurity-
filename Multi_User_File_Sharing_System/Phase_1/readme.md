@@ -22,8 +22,5 @@
 ✓ 搭建 VPN (Tailscale)
         │
         ▼
-⑧ 配置 服务器防火墙（nftables）
-        │
-        ▼
-⑨ 搭建网络流量日志
+✓ 配置 服务器防火墙（nftables）
 ```
