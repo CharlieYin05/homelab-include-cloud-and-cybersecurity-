@@ -74,6 +74,15 @@ Access is granted by role and service.
 
 > Device membership does not automatically imply access to every service.
 
+| Node | Primary Role |
+|---|---|
+| `cy-server` | Network hub, Docker host, Exit Node, Subnet Router |
+| `cy-server-fss` | Audited Samba file server |
+| `Windows Workstation` | Sunshine host and main workstation |
+| `MacBook` | Main development / administration client |
+| `Android Tablet` | Moonlight streaming client |
+| `Mi Play` | SSH SOCKS5 tunnel endpoint |
+
 ### Key Traffic Flows
 ```text
 Shared Folder Access
@@ -87,14 +96,4 @@ Windows Workstation -> Sunshine -> OpenWRT -> Android Tablet / Moonlight V+
 
 SOCKS5 Proxy
 MacBook -> SwitchyOmega -> ssh -D -> Mi Play
-
-
-
-| Node | Primary Role |
-|---|---|
-| `cy-server` | Network hub, Docker host, Exit Node, Subnet Router |
-| `cy-server-fss` | Audited Samba file server |
-| `Windows Workstation` | Sunshine host and main workstation |
-| `MacBook` | Main development / administration client |
-| `Android Tablet` | Moonlight streaming client |
-| `Mi Play` | SSH SOCKS5 tunnel endpoint |
+```
