@@ -59,6 +59,35 @@ cy-server                   cy-server-fss               Windows Work Station    
                               Other User
                                -SMB Client
 ```
+### Access Control Model
+The Tailnet is not configured as a flat trusted network.
+Access is granted by role and service.
+
+| Source | Destination | Access |
+|--------|-------------|--------|
+| Admin  | `cy-server` | SSH, HTTPS |
+| Admin  | `cy-server-fss` | SSH, SMB |
+| Admin  | Home Router | SSH, Web UI, DNS |
+| Admin  | Internet | Via Tailscale Exit Node |
+| File User | `cy-server-fss` | SMB only |
+| File User | Home Router | DNS only |
+
+> Device membership does not automatically imply access to every service.
+
+### Key Traffic Flows
+```text
+Shared Folder Access
+User -> Tailnet -> fss.cy-server.com -> Samba
+
+Infrastructure Administration
+Admin -> Tailnet -> cy-server / Home Router
+
+LAN Game Streaming
+Windows Workstation -> Sunshine -> OpenWRT -> Android Tablet / Moonlight V+
+
+SOCKS5 Proxy
+MacBook -> SwitchyOmega -> ssh -D -> Mi Play
+
 
 
 | Node | Primary Role |
