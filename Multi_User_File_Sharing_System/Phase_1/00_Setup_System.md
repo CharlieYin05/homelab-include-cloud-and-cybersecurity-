@@ -69,7 +69,7 @@ Debian GNU/Linux 13 (trixie)
 └── /srv
     ├── storage
     │   ├── shares
-    │   └── immich
+    │   └── docker
     │
     ├── logs
     │   ├── samba
