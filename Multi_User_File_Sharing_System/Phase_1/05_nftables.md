@@ -188,8 +188,12 @@ INPUT
  ├─ 6. tailscale0                        ← 允许 tailscale0 只开放的 FSS 服务（细分）
  │      ├─ TCP 22  → ACCEPT
  │      └─ TCP 445 → ACCEPT
+ |
+ ├─ 7. enp3s0 — cy-server                ← enp3s0 只允许来自 cy-server 的 SSH 访问
+ │      └─ Source: 192.168.XX.XX
+ │          TCP 22 → ACCEPT
  │
- └─ 7. 其他                               ← 什么都没匹配到直接丢掉
+ └─ 8. 其他                               ← 什么都没匹配到直接丢掉
         └─ DROP
 ```
 
