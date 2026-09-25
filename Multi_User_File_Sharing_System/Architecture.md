@@ -10,11 +10,11 @@ The system is designed around five principles:
 5. All file operations should be **auditable**.
 
 ## System Architecture
-#### Two Network Paths to FSS:
+#### Two Network Paths to FSS
 ```
                                      cy-server-fss
                               +-------------------------+
-                              |   /srv/shares/shared    |
+                              |   /srv/storage/shares   |
                               |          ↑              |
                               |      POSIX ACL          |
                               |          ↑              |
@@ -32,7 +32,7 @@ The system is designed around five principles:
         =============================         ==============================
 ```
 
-#### Access Paths by Device:
+#### Access Paths by Device
 ```
 
                             Tailnet Devices                          Home LAN Devices
@@ -87,6 +87,10 @@ Merlin Router
   100.x.x.x
 ```
 
+The router participates only in DNS resolution.
+
+After resolution, SMB/SSH traffic travels directly between the client and FSS through the Tailnet.
+
 ## Identity & Permission Model
 | Role | SMB | SSH | File Access |
 |---|---:|---:|---|
@@ -95,11 +99,15 @@ Merlin Router
 | cy-server | No | Yes via LAN | Server administration |
 | Other LAN Device | No | No | None |
 
+```text
 Network Identity
 └── Tailscale user / group
+    └── Controls network reachability
 
 File Identity
 └── Samba / Unix account
+    └── Controls filesystem access
+```
 
 ## Network Interface Model
 | Interface | Purpose | Allowed Inbound Access |
@@ -121,7 +129,7 @@ File Identity
 │
 └── /srv
     ├── storage             ← Persistent service data
-    │   └── shares          ← Currently shared folder          
+    │   └── shares          ← Currently shared data          
     │
     ├── logs                ← Long-term audit, security, and network logs
     │   ├── samba
@@ -134,7 +142,7 @@ File Identity
 
 ### Upgrade Planned
 ```
-256 GB SSD — System
+256GB SSD — System
 ├── Debian
 ├── Samba
 ├── Tailscale
@@ -145,7 +153,7 @@ File Identity
 └── /opt
 
 
-2 TB SSD — Persistent Data
+2TB SSD — Persistent Data
 └── /srv
     ├── storage
     │   ├── shares
@@ -158,7 +166,7 @@ File Identity
     └── backups
 
 
-2 TB HDD — Recovery Backup
+2TB HDD — Recovery Backup
 ├── /srv
 ├── /etc
 ├── ACL exports
@@ -229,7 +237,8 @@ vnStat
 
 ### Planned
 - Dedicated VLAN for server infrastructure.
+- Automate periodic backups from FSS to dedicated backup storage.
 - Build a monitoring dashboard for FSS file activity and network traffic statistics.
 - Develop a lightweight host/network IDS for FSS to detect suspicious activity and generate alerts.
-- Redesign the FSS storage architecture into dedicated system, persistent-data, and recovery-backup tiers using a 256GB system SSD, 2TB data SSD, and 2TB recovery HDD.
+- Redesign the FSS storage architecture into dedicated system, persistent-data, and recovery-backup tiers using a 256 GB system SSD, 2 TB data SSD, and 2 TB recovery HDD.
 
