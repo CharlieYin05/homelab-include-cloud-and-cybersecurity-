@@ -17,25 +17,25 @@ The goal of this phase is to build a file server that provides:
 ## Build Flow
 
 ```text
-Debian Server
+✓ Debian Server
      |
      v
-/srv Directory Structure
+✓ /srv Directory Structure
      |
      v
-Linux Users & Groups
+✓ Linux Users & Groups
      |
      v
-chmod / SGID / POSIX ACL
+✓ chmod / SGID / POSIX ACL
      |
      v
-Samba File Sharing
+✓ Samba File Sharing
      |
      v
-Samba Full Audit
+✓ Samba File Auditing
      |
      v
-Tailscale Access Control
+✓ Tailscale Access Control
      |
      v
 nftables Host Firewall
@@ -223,8 +223,69 @@ The only planned direct LAN administrative exception is SSH from cy-server.
 Status: In progress — the final cy-server -> FSS TCP/22 LAN rule still needs to be added and validated.
 
 See: 05_nftables.md
+
+---
+
+## Phase 1 Access Model
+
+When Phase 1 is complete, normal file access follows the Tailnet path:
+```
+File User
+    |
+    | SMB :445
+    v
+Tailscale Grants
+    |
+    v
+tailscale0
+    |
+    v
+nftables
+    |
+    v
+Samba Authentication
+    |
+    v
+Unix Identity / Group Mapping
+    |
+    v
+Linux Groups + POSIX ACL
+    |
+    v
+/srv/storage/shares/
+```
+Administrators additionally receive SSH access through the Tailnet.
+
+A restricted LAN administration path is retained for `cy-server`:
+```
+Admin Device
+    |
+    | TCP :22 only
+    v
+cy-server
+    |
+    | TCP :22 only
+    v
+FSS LAN Interface
+    |
+    v
+nftables
+    |
+    v
+   SSH
 ```
 
+---
+## Next Phase
 
+Phase 2 will focus on observability and detection rather than core file-serving functionality.
 
+Planned areas include:
+
+- FSS file-activity visualisation
+- Network traffic collection and visualisation
+- Monitoring dashboard
+- Host/network intrusion detection and alerting
+
+Backup automation and storage architecture upgrades are tracked separately as infrastructure improvements.
 
