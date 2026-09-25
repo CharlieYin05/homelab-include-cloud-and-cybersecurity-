@@ -28,7 +28,7 @@ The system is designed around five principles:
                     100.x.x.x        |        |       192.168.50.x
                                      |        |
         =============================+        +=============================
-              TAILNET PATH                         RESTRICTED LAN ADMIN PATH
+              TAILNET PATH                         RESTRICTED LAN PATH
         =============================         ==============================
 ```
 
