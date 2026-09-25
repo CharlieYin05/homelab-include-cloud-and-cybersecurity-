@@ -108,15 +108,63 @@ File Identity
 | LAN interface | Restricted local administration | SSH from `cy-server` only |
 
 ## Storage Layout
+
+### Current
 ```
-/srv/
-├── shares/
-│   └── shared/
-├── logs/
-│   ├── samba/
-│   └── firewall/
-└── backups/
+256GB SSD
+│
+├── /
+│
+├── /etc                    ← All configuration files
+├── /opt                    ← Application files / container definitions
+├── /var                    ← Runtime data, databases, caches, and system logs
+│
+└── /srv
+    ├── storage             ← Persistent service data
+    │   └── shares          ← Currently shared folder          
+    │
+    ├── logs                ← Long-term audit, security, and network logs
+    │   ├── samba
+    │   ├── firewall
+    │   └── traffic
+    │
+    └── backups             ← Temporarily staged backup files
+
 ```
+
+### Upgrade Planned
+```
+256 GB SSD — System
+├── Debian
+├── Samba
+├── Tailscale
+├── nftables
+├── Container Runtime
+├── /etc
+├── /var
+└── /opt
+
+
+2 TB SSD — Persistent Data
+└── /srv
+    ├── storage
+    │   ├── shares
+    │   └── docker
+    ├── logs
+    │   ├── samba
+    │   ├── firewall
+    │   ├── traffic
+    │   └── ids
+    └── backups
+
+
+2 TB HDD — Recovery Backup
+├── /srv
+├── /etc
+├── ACL exports
+└── Recovery scripts
+```
+
 
 ## Logging / Observability Pipeline
 ```
@@ -178,12 +226,10 @@ vnStat
 - LAN-originated inbound traffic is dropped by default.
 - `cy-server` is the only LAN host allowed to SSH into FSS.
 - File operations are audited.
-- Backups are currently performed manually on a periodic basis.
 
 ### Planned
 - Dedicated VLAN for server infrastructure.
-- Stronger network segmentation between servers, clients and IoT devices.
 - Build a monitoring dashboard for FSS file activity and network traffic statistics.
 - Develop a lightweight host/network IDS for FSS to detect suspicious activity and generate alerts.
-- Scheduled automated backups from FSS to the Windows Workstation backup storage.
+- Redesign the FSS storage architecture into dedicated system, persistent-data, and recovery-backup tiers using a 256GB system SSD, 2TB data SSD, and 2TB recovery HDD.
 
