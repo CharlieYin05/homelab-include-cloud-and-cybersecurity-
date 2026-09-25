@@ -231,7 +231,8 @@ journald
 ### Planned
 - Dedicated VLAN for server infrastructure.
 - Automate periodic backups from FSS to dedicated backup storage.
-- Build a monitoring dashboard for FSS file activity and network traffic statistics.
+- Build a monitoring dashboard for FSS file activity.
+- Add network traffic collection and visualisation for FSS.
 - Develop a lightweight host/network IDS for FSS to detect suspicious activity and generate alerts.
 - Redesign the FSS storage architecture into dedicated system, persistent-data, and recovery-backup tiers using a 256 GB system SSD, 2 TB data SSD, and 2 TB recovery HDD.
 
