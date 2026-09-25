@@ -28,7 +28,7 @@ The system is designed around five principles:
                     100.x.x.x        |        |       192.168.50.x
                                      |        |
         =============================+        +=============================
-              TAILNET PATH                           HOME-LAN PATH
+              TAILNET PATH                         RESTRICTED LAN ADMIN PATH
         =============================         ==============================
 ```
 
@@ -110,10 +110,10 @@ File Identity
 ```
 
 ## Network Interface Model
-| Interface | Purpose | Allowed Inbound Access |
-|---|---|---|
-| `tailscale0` | Tailnet-native client access | SMB for users/admins; SSH for admins |
-| LAN interface | Restricted local administration | SSH from `cy-server` only |
+| Interface    | Purpose                           | Allowed Inbound Access                         |
+| ------------ | --------------------------------- | ---------------------------------------------- |
+| `tailscale0` | Primary FSS service access        | SMB for File Users/Admins; SSH for Admins      |
+| `enp3s0`     | Physical LAN / Tailscale underlay | Tailscale transport; SSH from `cy-server` only |
 
 ## Storage Layout
 
