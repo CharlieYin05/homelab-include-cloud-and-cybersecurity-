@@ -229,7 +229,7 @@ Filesystem validation should also confirm that:
 ### Storage & Recovery
 - 256 GB system SSD
 - 2 TB persistent-data SSD
-- 2 TB recovery HDD
+- 2 TB recovery HDD              ← Not in this `cy-server-fss`
 - Automated backups
 - Recovery validation
 
