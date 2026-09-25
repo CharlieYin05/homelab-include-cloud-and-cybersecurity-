@@ -183,6 +183,7 @@ vnStat
 ### Planned
 - Dedicated VLAN for server infrastructure.
 - Stronger network segmentation between servers, clients and IoT devices.
-- Centralised monitoring and alerting.
+- Build a monitoring dashboard for FSS file activity and network traffic statistics.
+- Develop a lightweight host/network IDS for FSS to detect suspicious activity and generate alerts.
 - Scheduled automated backups from FSS to the Windows Workstation backup storage.
 
