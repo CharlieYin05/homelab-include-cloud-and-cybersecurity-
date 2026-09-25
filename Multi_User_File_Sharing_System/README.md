@@ -44,7 +44,7 @@ The system is designed to provide remote file access while keeping administrativ
                     +------+------+
                            |
                            v
-                    /srv/shares/shared
+                    /srv/shares/storage
 ```
 
 ## Security Model
