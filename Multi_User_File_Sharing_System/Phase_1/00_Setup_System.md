@@ -41,7 +41,7 @@ Debian GNU/Linux 13 (trixie)
 └── /srv
     ├── storage         ← 长期保存的业务数据
     │   ├── shares
-    │   └── immich
+    │   └── docker
     ├── logs            ← 长期保存的审计、安全、网络日志
     │   ├── samba
     │   ├── firewall
