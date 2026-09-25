@@ -194,13 +194,6 @@ nftables
   |
   v
 journald
-
-
-Traffic Statistics
-Network Interfaces
-  |
-  v
-vnStat
 ```
 
 ## Backup Architecture
