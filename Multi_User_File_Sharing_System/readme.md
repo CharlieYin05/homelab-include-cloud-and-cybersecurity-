@@ -68,4 +68,3 @@ Shared Files
 
 - [Architecture](./Architecture.md)
 - [Threat Model](./Threat-Model.md)
-- [Operations / Troubleshooting](...)
