@@ -38,7 +38,7 @@ cy-server                        cy-server-fss                  |======= Windows
                                                                          Android Tablet
                                                                           - Moonlight V+
 ```
-### Virtual Network (Tailscale) Topology
+### Virtual Network (Tailnet) Topology
 ```
                                                                   Charlie's Tailnet(Zero-Trust)
                                                                              |
